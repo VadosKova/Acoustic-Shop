@@ -64,6 +64,31 @@ export default function Profile() {
     }
   }
 
+  async function login() {
+    if(!email || !password){
+      alert("Please fill all fields");
+      return;
+    }
+
+    try {
+      const res = await API.post("/api/auth/login", { email, password });
+
+      setUser(res.data);
+      localStorage.setItem("user", JSON.stringify(res.data));
+
+    }catch(err){
+      alert("Login failed");
+    }
+  }
+
+  function logout() {
+    setUser(null);
+    setAccount("");
+    setWalletBalance("0");
+
+    localStorage.removeItem("user");
+  }
+
   return (
     <div className="profile-container">
       
