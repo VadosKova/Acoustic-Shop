@@ -3,7 +3,6 @@ import { API } from "../../api/api";
 import ProductCard from "../components/ProductCard";
 import Spinner from "../components/Spinner";
 import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
