@@ -77,6 +77,41 @@ export default function Shop() {
       </header>
 
       <Navbar cartCount={cart.length} />
+
+      <main className="main-layout">
+        <aside className="filter-sidebar">
+          <h3>Категорії</h3>
+          <ul className="category-list">
+            {categories.map(cat => (
+              <li key={cat} className="category-item">
+                <input
+                  type="radio"
+                  id={cat}
+                  name="category"
+                  checked={category === cat}
+                  onChange={() => setCategory(cat)}
+                />
+                <label htmlFor={cat}>{cat}</label>
+              </li>
+            ))}
+          </ul>
+          <button className="reset-button" onClick={() => setCategory("")}>
+            Reset Filters
+          </button>
+        </aside>
+
+        <section className="products-content">
+          {loading ? (
+            <Spinner />
+          ) : (
+            <div className="products-grid">
+              {filteredProducts.map(p => (
+                <ProductCard key={p.id} product={p} onBuy={addToCart} />
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
     </div>
   );
 }
