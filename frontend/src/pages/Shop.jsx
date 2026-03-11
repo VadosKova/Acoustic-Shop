@@ -38,6 +38,27 @@ export default function Shop() {
       })
   }, []);
 
+  useEffect(()=>{
+    let result = products
+
+    if(searchTerm)
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+
+    if(category)
+      result = result.filter(p => p.category === category)
+    setFilteredProducts(result)
+  },[searchTerm,category,products])
+
+  function addToCart(product){
+    const saved = JSON.parse(localStorage.getItem("cart")) || [];
+    const updated = [...saved,product];
+
+    localStorage.setItem("cart",JSON.stringify(updated));
+    setCart(updated);
+  }
+
   return (
     <div className="shop-container">
       <header className="shop-navbar">
