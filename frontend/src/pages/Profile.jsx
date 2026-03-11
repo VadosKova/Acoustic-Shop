@@ -47,6 +47,23 @@ export default function Profile() {
     setWalletBalance(ethers.formatEther(balance));
   }
 
+  async function register() {
+    if(!name || !email || !password){
+      alert("Please fill all fields");
+      return;
+    }
+
+    const newUser = { name, email, password, role, avatarUrl: avatar };
+    try {
+      const res = await API.post("/api/auth/register", newUser);
+
+      setUser(res.data);
+      localStorage.setItem("user", JSON.stringify(res.data));
+    }catch(err){
+      alert("Registration failed");
+    }
+  }
+
   return (
     <div className="profile-container">
       
