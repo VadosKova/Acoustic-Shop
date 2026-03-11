@@ -77,6 +77,41 @@ export default function Catalog() {
     loadProducts();
   }
 
+  function editProduct(p){
+    setEditingId(p.id);
+
+    setName(p.name);
+    setCategory(p.category);
+    setRating(p.rating);
+    setPriceEth(p.priceEth);
+    setImage(p.imageUrl);
+  }
+
+  async function updateProduct(){
+    const product = {
+      id: editingId,
+      name,
+      category,
+      rating: parseFloat(rating),
+      priceEth: parseFloat(priceEth),
+      imageUrl: image
+    };
+
+    await API.put(`/api/products/${editingId}`,product);
+
+    setEditingId(null);
+    clearForm();
+    loadProducts();
+  }
+
+  function clearForm(){
+    setName("");
+    setCategory("");
+    setRating("");
+    setPriceEth("");
+    setImage("");
+  }
+
   return (
     <div className="catalog-container">
       <Navbar cartCount={cart.length} />
