@@ -99,6 +99,50 @@ export default function Cart() {
   return (
     <div className="cart-container">
       <Navbar cartCount={cart.length} />
+
+      <h2>Shopping Cart</h2>
+      <button onClick={connectWallet}>Connect MetaMask</button>
+
+      <p><b>Wallet:</b> {account || "not connected"}</p>
+      {account && (
+        <>
+          <p><b>Your balance:</b> {walletBalance} ETH</p>
+          <p><b>Contract balance:</b> {contractBalance} ETH</p>
+        </>
+      )}
+      <p>{status}</p>
+
+      <div className="cart-list">
+        {cart.length === 0 && <p>Cart is empty</p>}
+
+        {cart.map((product,index)=> (
+          <div key={index} className="cart-item">
+            <img src={product.imageUrl} />
+
+            <div className="cart-info">
+              <h4>{product.name}</h4>
+              <p>⭐ {product.rating}</p>
+              <p>{product.priceEth} ETH</p>
+            </div>
+
+            <div className="cart-actions">
+              <button
+                className="checkout-button"
+                onClick={()=>checkout(product,index)}
+              >
+                Checkout
+              </button>
+
+              <button
+                className="remove-button"
+                onClick={()=>removeFromCart(index)}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
