@@ -57,6 +57,38 @@ export default function Cart() {
     setContractBalance(ethers.formatEther(balance));
   }
 
+  async function checkout(product,index){
+    try {
+      if(!account){
+        alert("Connect MetaMask");
+        return;
+      }
+
+      setStatus("Waiting for confirmation...");
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const tx = await signer.sendTransaction({
+        to: contractAddress,
+        value: ethers.parseEther(product.priceEth.toString())
+      });
+
+      await tx.wait();
+
+      setStatus("Payment successful");
+
+      removeFromCart(index);
+
+      loadWalletBalance(account);
+      loadContractBalance();
+    } catch(err){
+      console.error(err);
+      setStatus("Payment failed");
+    }
+  }
+
+
   return (
     <div className="cart-container">
       <Navbar cartCount={cart.length} />
