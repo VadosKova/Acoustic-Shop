@@ -89,6 +89,15 @@ export default function Profile() {
     localStorage.removeItem("user");
   }
 
+  function handleAvatarUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => setAvatar(reader.result);
+    reader.readAsDataURL(file);
+  }
+
   return (
     <div className="profile-container">
       
