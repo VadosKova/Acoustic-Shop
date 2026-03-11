@@ -15,7 +15,7 @@ export default function Profile() {
 
   const [account, setAccount] = useState("");
   const [walletBalance, setWalletBalance] = useState("0");
-  
+
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -24,6 +24,28 @@ export default function Profile() {
         setUser(JSON.parse(savedUser));
     }
   }, []);
+
+  useEffect(() => {
+    if (account) {
+      loadWalletBalance();
+    }
+  }, [account]);
+
+  async function connectWallet() {
+    if (!window.ethereum) {
+      alert("Please install MetaMask!");
+      return;
+    }
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const accounts = await provider.send("eth_requestAccounts", []);
+    setAccount(accounts[0]);
+  }
+
+  async function loadWalletBalance() {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const balance = await provider.getBalance(account);
+    setWalletBalance(ethers.formatEther(balance));
+  }
 
   return (
     <div className="profile-container">
