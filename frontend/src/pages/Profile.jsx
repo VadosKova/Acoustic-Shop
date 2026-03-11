@@ -203,6 +203,33 @@ export default function Profile() {
   return (
     <div className="profile-container">
       <Navbar />
+
+      <div className="profile-card">
+        <img
+          src={user.avatarUrl || "https://i.imgur.com/HeIi0wU.png"}
+          className="avatar-large"
+          alt="User Avatar"
+        />
+
+        <h2>{user.name}</h2>
+        <p className="role">{user.role}</p>
+
+        <div className="profile-info">
+          <span>Email</span>
+          <p>{user.email}</p>
+        </div>
+
+        <button className="wallet-btn" onClick={connectWallet}>Connect Wallet</button>
+
+        {account && (
+          <div className="wallet-box">
+            <p><b>Wallet:</b> {account}</p>
+            <p><b>Balance:</b> {walletBalance} ETH</p>
+          </div>
+        )}
+
+        <button className="logout" onClick={logout}>Log out</button>
+      </div>
     </div>
   );
 }
