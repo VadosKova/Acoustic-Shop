@@ -101,14 +101,7 @@ export default function Profile() {
   if (!user) {
     return (
       <div className="profile-container">
-        <nav>
-          <ul className="nav-menu">
-            <li><Link to="/" className="nav-link">Home</Link></li>
-            <li><Link to="/catalog" className="nav-link">Catalog</Link></li>
-            <li><Link to="/cart" className="nav-link">Cart</Link></li>
-            <li><Link to="/profile" className="nav-link">Profile</Link></li>
-          </ul>
-        </nav>
+        <Navbar />
 
         <div className="auth-card">
           <h2 style={{ textAlign: "center" }}>{mode === "register" ? "Register" : "Login"}</h2>
