@@ -88,6 +88,13 @@ export default function Cart() {
     }
   }
 
+  function removeFromCart(index){
+    const updated = cart.filter((_,i)=> i !== index);
+
+    setCart(updated);
+    localStorage.setItem("cart",JSON.stringify(updated));
+  }
+
 
   return (
     <div className="cart-container">
