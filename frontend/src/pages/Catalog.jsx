@@ -116,6 +116,77 @@ export default function Catalog() {
     <div className="catalog-container">
       <Navbar cartCount={cart.length} />
       
+      <div className="catalog-admin">
+        <h2>Product Manager</h2>
+
+        <div className="product-form">
+          <div className="image-upload">
+            {image ? (
+              <img src={image} className="product-preview"/>
+            ) : (
+              <div className="image-placeholder">
+                Upload Image
+              </div>
+            )}
+
+            <input type="file" onChange={handleImageUpload}/>
+          </div>
+
+          <input
+            placeholder="Product Name"
+            value={name}
+            onChange={e=>setName(e.target.value)}
+          />
+
+          <select value={category} onChange={e=>setCategory(e.target.value)}>
+            <option value="">Select category</option>
+            {categories.map(c => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+
+          <input
+            placeholder="Rating"
+            value={rating}
+            onChange={e=>setRating(e.target.value)}
+          />
+
+          <input
+            placeholder="Price ETH"
+            value={priceEth}
+            onChange={e=>setPriceEth(e.target.value)}
+          />
+
+          {editingId ? (
+            <button onClick={updateProduct}>
+              Update Product
+            </button>
+          ) : (
+            <button onClick={addProduct}>Add Product</button>
+          )}
+        </div>
+
+        <h3>All Products</h3>
+        <div className="catalog-products">
+          {products.map(p => (
+            <div key={p.id} className="catalog-product-card">
+              <img src={p.imageUrl} />
+
+              <div className="product-info">
+                <h4>{p.name}</h4>
+                <p>{p.category}</p>
+                <p>⭐ {p.rating}</p>
+                <p>{p.priceEth} ETH</p>
+              </div>
+
+              <div className="product-actions">
+                <button onClick={()=>editProduct(p)}>Edit</button>
+                <button onClick={()=>deleteProduct(p.id)}>Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
