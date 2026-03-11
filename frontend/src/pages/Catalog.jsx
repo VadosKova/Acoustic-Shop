@@ -34,11 +34,27 @@ export default function Catalog() {
     loadProducts();
   },[]);
 
+  async function loadProducts(){
+    const res = await API.get("/api/products");
+    setProducts(res.data);
+  }
+
+  function handleImageUpload(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
 
   return (
     <div className="catalog-container">
       <Navbar cartCount={cart.length} />
-      
+
     </div>
   );
 }
