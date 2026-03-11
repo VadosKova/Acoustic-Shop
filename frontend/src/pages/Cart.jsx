@@ -48,6 +48,15 @@ export default function Cart() {
     setWalletBalance(ethers.formatEther(balance));
   }
 
+  async function loadContractBalance(){
+    if(!contractAddress) return;
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const balance = await provider.getBalance(contractAddress);
+
+    setContractBalance(ethers.formatEther(balance));
+  }
+
   return (
     <div className="cart-container">
       <Navbar cartCount={cart.length} />
