@@ -15,12 +15,22 @@ export default function Profile() {
   const [account, setAccount] = useState("");
   const [walletBalance, setWalletBalance] = useState("0");
 
+  const [editMode, setEditMode] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editAvatar, setEditAvatar] = useState("");
+
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
 
     if (savedUser) {
-        setUser(JSON.parse(savedUser));
+      const u = JSON.parse(savedUser);
+      setUser(u);
+
+      setEditName(u.name);
+      setEditEmail(u.email);
+      setEditAvatar(u.avatarUrl);
     }
   }, []);
 
@@ -120,6 +130,50 @@ export default function Profile() {
 
     const reader = new FileReader();
     reader.onload = () => setAvatar(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  function saveProfile(){
+    if(!editName.trim() || !editEmail.trim()){
+      alert("Fields cannot be empty");
+      return;
+    }
+
+    const updatedUser = {
+      ...user,
+      name: editName.trim(),
+      email: editEmail.trim(),
+      avatarUrl: editAvatar
+    };
+
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+
+    setEditMode(false);
+  }
+
+  function handleEditAvatar(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp"
+    ];
+
+    if(!allowedTypes.includes(file.type)){
+      alert("Invalid image format");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setEditAvatar(reader.result);
+    };
+
     reader.readAsDataURL(file);
   }
 
