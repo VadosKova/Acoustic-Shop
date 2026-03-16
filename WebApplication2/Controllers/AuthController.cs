@@ -13,9 +13,6 @@ namespace WebApplication2.Controllers
         {
             user.Id = UserService.Users.Count + 1;
 
-            if (string.IsNullOrEmpty(user.Role))
-                user.Role = "User";
-
             UserService.Users.Add(user);
 
             return Ok(user);
