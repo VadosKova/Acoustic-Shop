@@ -10,7 +10,6 @@ export default function Profile() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("User");
   const [avatar, setAvatar] = useState("");
 
   const [account, setAccount] = useState("");
@@ -57,7 +56,6 @@ export default function Profile() {
       name: name.trim(),
       email: email.trim(),
       password: password.trim(),
-      role,
       avatarUrl: avatar
     };
 
@@ -176,16 +174,6 @@ export default function Profile() {
             onChange={(e)=>setPassword(e.target.value)}
           />
 
-          {mode === "register" && (
-            <select
-              value={role}
-              onChange={(e)=>setRole(e.target.value)}
-            >
-              <option value="User">User</option>
-              <option value="Admin">Admin</option>
-            </select>
-          )}
-
           {mode === "register" ? (
             <>
               <button className="primary-btn" onClick={register}>
@@ -228,7 +216,6 @@ export default function Profile() {
         />
 
         <h2>{user.name}</h2>
-        <p className="role">{user.role}</p>
 
         <div className="profile-info">
           <span>Email</span>

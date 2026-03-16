@@ -26,7 +26,7 @@ export default function Catalog() {
   ];
 
   useEffect(()=>{
-    if(!user || user.role !== "Admin"){
+    if(!user || user.email !== "admin@gmail.com"){
       alert("Access only for Admin");
       window.location.href="/";
       return;

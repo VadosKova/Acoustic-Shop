@@ -6,8 +6,8 @@ export default function Navbar({ cartCount = 0 }) {
   function openCatalog(){
     const user = JSON.parse(localStorage.getItem("user"));
 
-    if(!user || user.role !== "Admin"){
-      alert("Catalog available only for Admin");
+    if(!user || user.email !== "admin@gmail.com"){
+      alert("Only for Admin");
       return;
     }
     navigate("/catalog");
