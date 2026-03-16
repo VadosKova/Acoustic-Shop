@@ -97,6 +97,11 @@ export default function Profile() {
     localStorage.removeItem("user");
   }
 
+  function disconnectWallet() {
+    setAccount("");
+    setWalletBalance("0");
+  }
+
   function handleAvatarUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -222,7 +227,15 @@ export default function Profile() {
           <p>{user.email}</p>
         </div>
 
-        <button className="wallet-btn" onClick={connectWallet}>Connect Wallet</button>
+        {!account ? (
+          <button className="wallet-btn" onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        ) : (
+          <button className="wallet-btn disconnect" onClick={disconnectWallet}>
+            Disconnect Wallet
+          </button>
+        )}
 
         {account && (
           <div className="wallet-box">
