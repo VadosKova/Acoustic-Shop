@@ -268,18 +268,66 @@ export default function Profile() {
       <Navbar />
 
       <div className="profile-card">
-        <img
-          src={user.avatarUrl || "https://i.imgur.com/HeIi0wU.png"}
-          className="avatar-large"
-          alt="User Avatar"
-        />
+        {editMode ? (
+          <>
+            <label htmlFor="editAvatar">
+              <img
+                src={editAvatar || "https://i.imgur.com/HeIi0wU.png"}
+                className="avatar-large clickable"
+              />
+            </label>
 
-        <h2>{user.name}</h2>
+            <input
+              id="editAvatar"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={handleEditAvatar}
+              hidden
+            />
 
-        <div className="profile-info">
-          <span>Email</span>
-          <p>{user.email}</p>
-        </div>
+            <input
+              value={editName}
+              onChange={(e)=>setEditName(e.target.value)}
+            />
+
+            <input
+              value={editEmail}
+              onChange={(e)=>setEditEmail(e.target.value)}
+            />
+
+            <button className="primary-btn" onClick={saveProfile}>
+              Save
+            </button>
+
+            <button
+              className="secondary-btn"
+              onClick={()=>setEditMode(false)}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <img
+              src={user.avatarUrl || "https://i.imgur.com/HeIi0wU.png"}
+              className="avatar-large"
+            />
+
+            <h2>{user.name}</h2>
+
+            <div className="profile-info">
+              <span>Email</span>
+              <p>{user.email}</p>
+            </div>
+
+            <button
+              className="edit-btn"
+              onClick={()=>setEditMode(true)}
+            >
+              Edit Profile
+            </button>
+          </>
+        )}
 
         {!account ? (
           <button className="wallet-btn" onClick={connectWallet}>
