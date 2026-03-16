@@ -48,12 +48,19 @@ export default function Profile() {
   }
 
   async function register() {
-    if(!name || !email || !password){
+    if(!name.trim() || !email.trim() || !password.trim()){
       alert("Please fill all fields");
       return;
     }
 
-    const newUser = { name, email, password, role, avatarUrl: avatar };
+    const newUser = {
+      name: name.trim(),
+      email: email.trim(),
+      password: password.trim(),
+      role,
+      avatarUrl: avatar
+    };
+
     try {
       const res = await API.post("/api/auth/register", newUser);
 
@@ -65,13 +72,16 @@ export default function Profile() {
   }
 
   async function login() {
-    if(!email || !password){
+    if(!email.trim() || !password.trim()){
       alert("Please fill all fields");
       return;
     }
 
     try {
-      const res = await API.post("/api/auth/login", { email, password });
+      const res = await API.post("/api/auth/login", {
+        email: email.trim(),
+        password: password.trim()
+      });
 
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
@@ -92,6 +102,18 @@ export default function Profile() {
   function handleAvatarUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
+
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp"
+    ];
+
+    if(!allowedTypes.includes(file.type)){
+      alert("Please upload a valid image (PNG, JPG, JPEG, WEBP)");
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = () => setAvatar(reader.result);
@@ -126,6 +148,7 @@ export default function Profile() {
               <input
                 id="avatarInput"
                 type="file"
+                accept="image/png, image/jpeg, image/webp"
                 onChange={handleAvatarUpload}
                 hidden
               />
