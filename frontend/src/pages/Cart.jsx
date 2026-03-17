@@ -98,7 +98,7 @@ export default function Cart() {
 
   return (
     <div className="cart-container">
-      <Navbar cartCount={cart.length} />
+      <Navbar/>
 
       <h2>Shopping Cart</h2>
       <button onClick={connectWallet}>Connect MetaMask</button>

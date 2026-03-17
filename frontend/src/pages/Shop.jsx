@@ -105,7 +105,7 @@ export default function Shop() {
           ) : (
             <div className="products-grid">
               {filteredProducts.map(p => (
-                <ProductCard key={p.id} product={p} onBuy={addToCart} />
+                <ProductCard key={p.id || p._id} product={p} onBuy={addToCart} />
               ))}
             </div>
           )}
