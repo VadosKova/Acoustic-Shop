@@ -42,23 +42,29 @@ export default function ProductDetails() {
 
   function addToCart() {
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const exists = saved.find(p => p.id === product.id);
+    if (exists) return;
+
     const updated = [...saved, product];
     localStorage.setItem("cart", JSON.stringify(updated));
   }
 
   useEffect(() => {
-    API.get(`/api/reviews/${id}`).then(res => setReviews(res.data));
+    API.get(`/api/products/${id}/reviews`)
+      .then(res => setReviews(res.data));
   }, [id]);
 
   function submitReview() {
-    API.post("/api/reviews", {
-        productId: id,
-        text: reviewText,
-        rating: reviewRating
+    API.post(`/api/products/${id}/review`, {
+      name: "User",
+      rating: reviewRating,
+      comment: reviewText
     }).then(res => {
-        setReviews(prev => [...prev, res.data]);
-        setReviewText("");
-        setReviewRating(0);
+      setProduct(res.data);
+      setReviews(res.data.reviews);
+      setReviewText("");
+      setReviewRating(0);
     });
   }
 
@@ -199,16 +205,11 @@ export default function ProductDetails() {
           {reviews.length === 0 ? (
             <p>Немає відгуків</p>
           ) : (
-            reviews.map(r => (
-              <div key={r.id} style={{
-                padding: 10,
-                borderBottom: "1px solid #eee"
-              }}>
-                <div style={{ color: "#f5a623", fontSize: 20 }}>
-                  {"★".repeat(r.rating)}
-                </div>
-                <p>{r.text}</p>
-                </div>
+            reviews.map((r, i) => (
+              <div key={i}>
+                <div>{"★".repeat(r.rating)}</div>
+                <p>{r.comment}</p>
+              </div>
             ))
           )}
         </div>
