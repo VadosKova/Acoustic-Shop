@@ -1,6 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+import HeartIcon from "../assets/icons/HeartIcon";
+import ReviewIcon from "../assets/icons/ReviewIcon";
+import CartIcon from "../assets/icons/CartIcon";
+
 export default function ProductCard({ product, onBuy }) {
   const navigate = useNavigate();
   const [fav, setFav] = useState(false);
@@ -14,19 +18,9 @@ export default function ProductCard({ product, onBuy }) {
     onBuy && onBuy(product);
   }
 
-  function toggleFavorite(e) {
-    e.stopPropagation();
-
-    setFav(!fav);
-
-    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
-
-    if (!fav) {
-      localStorage.setItem("favorites", JSON.stringify([...saved, product]));
-    } else {
-      const updated = saved.filter(p => p.id !== product.id);
-      localStorage.setItem("favorites", JSON.stringify(updated));
-    }
+  function renderStars(rating = 0) {
+    const fullStars = Math.round(rating);
+    return "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
   }
 
   return (
@@ -42,7 +36,8 @@ export default function ProductCard({ product, onBuy }) {
       boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
       padding: 16,
       boxSizing: "border-box",
-      height: 420,
+      height: 400,
+      position: "relative"
     }}>
       <div style={{
         width: "100%",
@@ -82,8 +77,42 @@ export default function ProductCard({ product, onBuy }) {
           {product.name}
         </h4>
         
-        <p style={{ margin: "0 0 8px 0" }}>⭐ {product.rating}</p>
-        <p style={{ margin: "0 0 12px 0", fontWeight: "bold" }}>{product.priceEth} ETH</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+          <span style={{ color: "#f5a623", fontSize: 20 }}>
+            {renderStars(product.rating)}
+          </span>
+
+          <ReviewIcon />
+          <span style={{ fontSize: 13, color: "#666" }}>
+            {product.reviewsCount || 0}
+          </span>
+        </div>
+
+        <p style={{ margin: "0 0 12px 0", fontWeight: "bold", fontSize: 20 }}>
+          {product.priceEth} ETH
+        </p>
+      </div>
+      <div style={{
+        position: "absolute",
+        bottom: 12,
+        right: 12,
+        display: "flex",
+        gap: 10,
+        alignItems: "center"
+      }}>
+        <div style={{ cursor: "pointer" }}>
+          <HeartIcon
+            filled={fav}
+            onClick={(e) => {
+              e.stopPropagation();
+              setFav(!fav);
+            }}
+          />
+        </div>
+
+        <div onClick={addToCart} style={{ cursor: "pointer" }}>
+          <CartIcon />
+        </div>
       </div>
     </div>
   );
