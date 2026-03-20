@@ -13,9 +13,6 @@ export default function ProductCard({ product, onBuy }) {
   function addToCart(e) {
     e.stopPropagation();
 
-    const saved = JSON.parse(localStorage.getItem("cart")) || [];
-    localStorage.setItem("cart", JSON.stringify([...saved, product]));
-
     onBuy && onBuy(product);
   }
 
@@ -24,8 +21,12 @@ export default function ProductCard({ product, onBuy }) {
     return "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
   }
 
+  function goToDetails() {
+    navigate(`/product/${product.id || product._id}`);
+  }
+
   return (
-    <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{
+    <div onClick={goToDetails} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{
       border: "1px solid #ddd",
       borderRadius: 10,
       width: "100%",
@@ -42,7 +43,8 @@ export default function ProductCard({ product, onBuy }) {
       height: 400,
       position: "relative",
       transform: hovered ? "translateY(-6px)" : "translateY(0)",
-      transition: "all 0.25s ease"
+      transition: "all 0.25s ease",
+      cursor: "pointer"
     }}>
       <div style={{
         width: "100%",

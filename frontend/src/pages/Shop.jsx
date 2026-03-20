@@ -52,9 +52,13 @@ export default function Shop() {
 
   function addToCart(product){
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
-    const updated = [...saved,product];
+    const exists = saved.find(p => p.id === product.id);
 
-    localStorage.setItem("cart",JSON.stringify(updated));
+    if (exists) return;
+
+    const updated = [...saved, product];
+
+    localStorage.setItem("cart", JSON.stringify(updated));
     setCart(updated);
   }
 
