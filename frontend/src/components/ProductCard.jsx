@@ -1,5 +1,33 @@
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 export default function ProductCard({ product, onBuy }) {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+  const [fav, setFav] = useState(false);
+
+  function addToCart(e) {
+    e.stopPropagation();
+
+    const saved = JSON.parse(localStorage.getItem("cart")) || [];
+    localStorage.setItem("cart", JSON.stringify([...saved, product]));
+
+    onBuy && onBuy(product);
+  }
+
+  function toggleFavorite(e) {
+    e.stopPropagation();
+
+    setFav(!fav);
+
+    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    if (!fav) {
+      localStorage.setItem("favorites", JSON.stringify([...saved, product]));
+    } else {
+      const updated = saved.filter(p => p.id !== product.id);
+      localStorage.setItem("favorites", JSON.stringify(updated));
+    }
+  }
 
   return (
     <div style={{
@@ -56,33 +84,6 @@ export default function ProductCard({ product, onBuy }) {
         
         <p style={{ margin: "0 0 8px 0" }}>⭐ {product.rating}</p>
         <p style={{ margin: "0 0 12px 0", fontWeight: "bold" }}>{product.priceEth} ETH</p>
-
-        <button
-          disabled={!user}
-          onClick={() => {
-            if(!user){
-              alert("Please login first");
-              return;
-            }
-
-            onBuy(product);
-          }}
-          style={{
-            marginTop: "auto",
-            padding: "10px 12px",
-            borderRadius: 6,
-            border: "none",
-            backgroundColor: "#28a745",
-            color: "#fff",
-            cursor: "pointer",
-            fontWeight: "bold",
-            transition: "0.2s"
-          }}
-          onMouseOver={(e) => e.target.style.backgroundColor = "#218838"}
-          onMouseOut={(e) => e.target.style.backgroundColor = "#28a745"}
-        >
-          Buy
-        </button>
       </div>
     </div>
   );
