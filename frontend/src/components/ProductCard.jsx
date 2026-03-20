@@ -8,6 +8,7 @@ import CartIcon from "../assets/icons/CartIcon";
 export default function ProductCard({ product, onBuy }) {
   const navigate = useNavigate();
   const [fav, setFav] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   function addToCart(e) {
     e.stopPropagation();
@@ -24,7 +25,7 @@ export default function ProductCard({ product, onBuy }) {
   }
 
   return (
-    <div style={{
+    <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{
       border: "1px solid #ddd",
       borderRadius: 10,
       width: "100%",
@@ -33,11 +34,15 @@ export default function ProductCard({ product, onBuy }) {
       flexDirection: "column",
       overflow: "hidden",
       backgroundColor: "#fff",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+      boxShadow: hovered
+        ? "0 8px 20px rgba(0,0,0,0.15)"
+        : "0 2px 6px rgba(0,0,0,0.1)",
       padding: 16,
       boxSizing: "border-box",
       height: 400,
-      position: "relative"
+      position: "relative",
+      transform: hovered ? "translateY(-6px)" : "translateY(0)",
+      transition: "all 0.25s ease"
     }}>
       <div style={{
         width: "100%",
@@ -54,7 +59,7 @@ export default function ProductCard({ product, onBuy }) {
         <img
           src={product.imageUrl}
           alt={product.name}
-          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", transform: hovered ? "scale(1.05)" : "scale(1)", transition: "transform 0.3s ease" }}
         />
       </div>
 
@@ -98,9 +103,12 @@ export default function ProductCard({ product, onBuy }) {
         right: 12,
         display: "flex",
         gap: 10,
-        alignItems: "center"
+        alignItems: "center",
+        opacity: hovered ? 1 : 0.7,
+        transform: hovered ? "translateY(0)" : "translateY(6px)",
+        transition: "all 0.25s ease"
       }}>
-        <div style={{ cursor: "pointer" }}>
+        <div style={{ cursor: "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
           <HeartIcon
             filled={fav}
             onClick={(e) => {
