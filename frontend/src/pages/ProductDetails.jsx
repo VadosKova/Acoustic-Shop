@@ -13,14 +13,53 @@ export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [fav, setFav] = useState(false);
 
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviews, setReviews] = useState([]);
+
   useEffect(() => {
     API.get(`/api/products/${id}`).then(res => setProduct(res.data));
   }, [id]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
+    const exists = saved.find(p => p.id === id);
+    setFav(!!exists);
+  }, [id]);
+
+  function toggleFavorite() {
+    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    if (fav) {
+        const updated = saved.filter(p => p.id !== product.id);
+        localStorage.setItem("favorites", JSON.stringify(updated));
+        setFav(false);
+    } else {
+        localStorage.setItem("favorites", JSON.stringify([...saved, product]));
+        setFav(true);
+    }
+  }
 
   function addToCart() {
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
     const updated = [...saved, product];
     localStorage.setItem("cart", JSON.stringify(updated));
+  }
+
+  useEffect(() => {
+    API.get(`/api/reviews/${id}`).then(res => setReviews(res.data));
+  }, [id]);
+
+  function submitReview() {
+    API.post("/api/reviews", {
+        productId: id,
+        text: reviewText,
+        rating: reviewRating
+    }).then(res => {
+        setReviews(prev => [...prev, res.data]);
+        setReviewText("");
+        setReviewRating(0);
+    });
   }
 
   if (!product) return <p>Loading...</p>;
@@ -116,7 +155,26 @@ export default function ProductDetails() {
 
       <div style={{ marginTop: 40 }}>
         <h3>Відгуки</h3>
+
+        <div style={{ display: "flex", gap: 4 }}>
+          {[1,2,3,4,5].map(n => (
+            <span
+              key={n}
+              onClick={() => setReviewRating(n)}
+              style={{
+                cursor: "pointer",
+                fontSize: 24,
+                color: n <= reviewRating ? "#f5a623" : "#ccc"
+              }}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+
         <textarea
+          value={reviewText}
+          onChange={(e) => setReviewText(e.target.value)}
           placeholder="Напишіть відгук..."
           style={{
             width: "100%",
@@ -126,7 +184,7 @@ export default function ProductDetails() {
           }}
         />
 
-        <button style={{
+        <button onClick={submitReview} style={{
           marginTop: 10,
           padding: "8px 14px",
           background: "#222",
@@ -136,6 +194,24 @@ export default function ProductDetails() {
         }}>
           Submit review
         </button>
+
+        <div style={{ marginTop: 20 }}>
+          {reviews.length === 0 ? (
+            <p>Немає відгуків</p>
+          ) : (
+            reviews.map(r => (
+              <div key={r.id} style={{
+                padding: 10,
+                borderBottom: "1px solid #eee"
+              }}>
+                <div style={{ color: "#f5a623", fontSize: 20 }}>
+                  {"★".repeat(r.rating)}
+                </div>
+                <p>{r.text}</p>
+                </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

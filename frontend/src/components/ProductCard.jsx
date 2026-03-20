@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import HeartIcon from "../assets/icons/HeartIcon";
 import ReviewIcon from "../assets/icons/ReviewIcon";
@@ -9,6 +9,27 @@ export default function ProductCard({ product, onBuy }) {
   const navigate = useNavigate();
   const [fav, setFav] = useState(false);
   const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
+    const exists = saved.find(p => p.id === product.id);
+    setFav(!!exists);
+  }, [product]);
+
+  function toggleFavorite(e) {
+    e.stopPropagation();
+
+    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    if (fav) {
+      const updated = saved.filter(p => p.id !== product.id);
+      localStorage.setItem("favorites", JSON.stringify(updated));
+      setFav(false);
+    } else {
+      localStorage.setItem("favorites", JSON.stringify([...saved, product]));
+      setFav(true);
+    }
+  }
 
   function addToCart(e) {
     e.stopPropagation();
@@ -113,10 +134,7 @@ export default function ProductCard({ product, onBuy }) {
         <div style={{ cursor: "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
           <HeartIcon
             filled={fav}
-            onClick={(e) => {
-              e.stopPropagation();
-              setFav(!fav);
-            }}
+            onClick={toggleFavorite}
           />
         </div>
 
