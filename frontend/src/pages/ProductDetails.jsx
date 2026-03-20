@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API } from "../../api/api";
+import Navbar from "../components/Navbar";
 
 import HeartIcon from "../assets/icons/HeartIcon";
 import CartIcon from "../assets/icons/CartIcon";
@@ -18,13 +19,15 @@ export default function ProductDetails() {
 
   function addToCart() {
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
-    localStorage.setItem("cart", JSON.stringify([...saved, product]));
+    const updated = [...saved, product];
+    localStorage.setItem("cart", JSON.stringify(updated));
   }
 
   if (!product) return <p>Loading...</p>;
 
   return (
     <div style={{ padding: 30 }}>
+      <Navbar />
       <div style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
@@ -104,10 +107,10 @@ export default function ProductDetails() {
           gap: 10,
           marginTop: 10
         }}>
-          <div>Матеріал: {product.material || "-"}</div>
-          <div>Колір: {product.color || "-"}</div>
-          <div>Кількість: {product.quantity || "-"}</div>
-          <div>Продавець: {product.seller || "-"}</div>
+          <div>Матеріал: {product.specs?.material || "-"}</div>
+          <div>Колір: {product.specs?.color || "-"}</div>
+          <div>Кількість: {product.specs?.quantity || "-"}</div>
+          <div>Продавець: {product.specs?.seller || "-"}</div>
         </div>
       </div>
 
