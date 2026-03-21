@@ -58,9 +58,18 @@ export default function Profile() {
     setWalletBalance(ethers.formatEther(balance));
   }
 
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
   async function register() {
     if(!name.trim() || !email.trim() || !password.trim()){
       alert("Please fill all fields");
+      return;
+    }
+
+    if(!isValidEmail(email)){
+      alert("Invalid email format");
       return;
     }
 
@@ -84,6 +93,11 @@ export default function Profile() {
   async function login() {
     if(!email.trim() || !password.trim()){
       alert("Please fill all fields");
+      return;
+    }
+
+    if(!isValidEmail(email)){
+      alert("Invalid email format");
       return;
     }
 
@@ -138,6 +152,11 @@ export default function Profile() {
   function saveProfile(){
     if(!editName.trim() || !editEmail.trim()){
       alert("Fields cannot be empty");
+      return;
+    }
+
+    if(!isValidEmail(editEmail)){
+      alert("Invalid email format");
       return;
     }
 
