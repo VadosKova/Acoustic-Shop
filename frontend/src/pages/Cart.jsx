@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import DeleteIcon from "../assets/icons/DeleteIcon";
 
 export default function Cart() {
   const [cart,setCart] = useState([]);
@@ -94,7 +95,7 @@ export default function Cart() {
                 className="remove-button"
                 onClick={()=>removeFromCart(index)}
               >
-                Remove
+                <DeleteIcon/>
               </button>
               {cart.length > 0 && (
                 <button className="checkout-btn" onClick={checkout}>

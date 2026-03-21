@@ -63,6 +63,11 @@ export default function ProductDetails() {
       .then(res => setReviews(res.data));
   }, [id]);
 
+  function renderStars(rating = 0) {
+    const fullStars = Math.round(rating);
+    return "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
+  }
+
   function submitReview() {
     API.post(`/api/products/${id}/review`, {
       name: "User",
@@ -106,7 +111,7 @@ export default function ProductDetails() {
 
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ color: "#f5a623", fontSize: 20 }}>
-              {"★".repeat(Math.round(product.rating || 0))}
+              {renderStars(product.rating)}
             </span>
             <ReviewIcon />
             <span>{product.reviewsCount || 0}</span>
@@ -215,7 +220,8 @@ export default function ProductDetails() {
           ) : (
             reviews.map((r, i) => (
               <div key={i}>
-                <div>{"★".repeat(r.rating)}</div>
+                <div style={{color: "#f5a623"}}>{"★".repeat(r.rating)}</div>
+                <h5>{r.name}</h5>
                 <p>{r.comment}</p>
               </div>
             ))

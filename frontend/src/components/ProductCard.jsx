@@ -115,7 +115,7 @@ export default function ProductCard({ product, onBuy }) {
           <span style={{ color: "#f5a623", fontSize: 20 }}>
             {renderStars(product.rating)}
           </span>
-
+          <br/>
           <ReviewIcon />
           <span style={{ fontSize: 13, color: "#666" }}>
             {product.reviewsCount || 0}
