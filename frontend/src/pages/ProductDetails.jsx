@@ -202,12 +202,7 @@ export default function ProductDetails() {
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
           placeholder="Напишіть відгук..."
-          style={{
-            width: "100%",
-            height: 80,
-            marginTop: 10,
-            padding: 10
-          }}
+          className="review-textarea"
         />
 
         <button onClick={submitReview} style={{

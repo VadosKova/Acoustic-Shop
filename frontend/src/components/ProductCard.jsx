@@ -122,7 +122,7 @@ export default function ProductCard({ product, onBuy }) {
           </span>
         </div>
 
-        <p style={{ margin: "0 0 12px 0", fontWeight: "bold", fontSize: 20 }}>
+        <p style={{ margin: "0 0 12px 0", fontWeight: "bold", fontSize: 25 }}>
           {product.priceEth} ETH
         </p>
       </div>
