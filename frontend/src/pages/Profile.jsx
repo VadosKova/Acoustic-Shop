@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { API } from "../../api/api";
 import { ethers } from "ethers";
 import Navbar from "../components/Navbar";
@@ -22,6 +23,8 @@ export default function Profile() {
 
   const [favorites, setFavorites] = useState([]);
   const [orders, setOrders] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -62,6 +65,16 @@ export default function Profile() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
+  function validatePassword(password) {
+    if (password.length < 6)
+      return "At least 6 characters";
+
+    if (!/\d/.test(password))
+      return "At least one digit";
+
+    return "";
+  }
+
   async function register() {
     if(!name.trim() || !email.trim() || !password.trim()){
       alert("Please fill all fields");
@@ -70,6 +83,11 @@ export default function Profile() {
 
     if(!isValidEmail(email)){
       alert("Invalid email format");
+      return;
+    }
+
+    if(!validatePassword(password)){
+      alert("At least 6 characters with digits");
       return;
     }
 
@@ -109,6 +127,10 @@ export default function Profile() {
 
       setUser(res.data);
       localStorage.setItem("user", JSON.stringify(res.data));
+
+      if (res.data.email === "admin@gmail.com") {
+        navigate("/admin-panel");
+      }
 
     }catch(err){
       alert("Login failed");
