@@ -69,10 +69,17 @@ export default function ProductDetails() {
   }
 
   function submitReview() {
+    if (reviewRating === 0) {
+        alert("Choose the count of stars");
+        return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
     API.post(`/api/products/${id}/review`, {
-      name: "User",
+      name: user ? user.name : "Anonymous",
       rating: reviewRating,
-      comment: reviewText
+      comment: reviewText || ""
     }).then(res => {
       setProduct(res.data);
       setReviews(res.data.reviews);
