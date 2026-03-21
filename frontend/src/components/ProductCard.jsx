@@ -19,6 +19,12 @@ export default function ProductCard({ product, onBuy }) {
   function toggleFavorite(e) {
     e.stopPropagation();
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(!user){
+      alert("You need to Sign In");
+      return;
+    }
+
     const saved = JSON.parse(localStorage.getItem("favorites")) || [];
 
     if (fav) {

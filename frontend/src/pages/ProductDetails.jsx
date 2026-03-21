@@ -27,7 +27,15 @@ export default function ProductDetails() {
     setFav(!!exists);
   }, [id]);
 
-  function toggleFavorite() {
+  function toggleFavorite(e) {
+    e.stopPropagation();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(!user){
+      alert("You need to Sign In");
+      return;
+    }
+
     const saved = JSON.parse(localStorage.getItem("favorites")) || [];
 
     if (fav) {
@@ -131,7 +139,7 @@ export default function ProductDetails() {
             <div style={{ cursor: "pointer" }}>
               <HeartIcon
                 filled={fav}
-                onClick={() => setFav(!fav)}
+                onClick={(toggleFavorite)}
               />
             </div>
           </div>
