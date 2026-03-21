@@ -126,7 +126,7 @@ export default function AdminPanel() {
 
   return (
     <div className="catalog-container">
-      <Navbar cartCount={cart.length} />
+      <Navbar />
 
       <button onClick={()=>{
           loadOrders();
