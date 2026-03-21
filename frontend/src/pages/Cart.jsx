@@ -1,91 +1,27 @@
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
 import Navbar from "../components/Navbar";
 
 export default function Cart() {
   const [cart,setCart] = useState([]);
-
-  const [account,setAccount] = useState("");
-  const [walletBalance,setWalletBalance] = useState("0");
-  const [contractBalance,setContractBalance] = useState("0");
-
-  const [status,setStatus] = useState("");
-
-  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+  const [user,setUser] = useState(null);
 
   useEffect(()=>{
-    const savedCart = localStorage.getItem("cart");
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(savedCart);
 
-    if(savedCart){
-      setCart(JSON.parse(savedCart));
-    }
+    const u = JSON.parse(localStorage.getItem("user"));
+    setUser(u);
   },[]);
 
-  useEffect(()=>{
-    if(account){
-      loadWalletBalance(account);
-      loadContractBalance();
-    }
-  },[account]);
+  function updateQuantity(index, delta){
+    const updated = [...cart];
+    const item = updated[index];
 
+    if(delta === -1 && item.quantity === 1) return;
+    item.quantity += delta;
 
-  async function connectWallet(){
-    if(!window.ethereum){
-      alert("Install MetaMask");
-      return;
-    }
-
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const accounts = await provider.send("eth_requestAccounts",[]);
-
-    setAccount(accounts[0]);
-  }
-
-  async function loadWalletBalance(account){
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const balance = await provider.getBalance(account);
-
-    setWalletBalance(ethers.formatEther(balance));
-  }
-
-  async function loadContractBalance(){
-    if(!contractAddress) return;
-
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const balance = await provider.getBalance(contractAddress);
-
-    setContractBalance(ethers.formatEther(balance));
-  }
-
-  async function checkout(product,index){
-    try {
-      if(!account){
-        alert("Connect MetaMask");
-        return;
-      }
-
-      setStatus("Waiting for confirmation...");
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-
-      const tx = await signer.sendTransaction({
-        to: contractAddress,
-        value: ethers.parseEther(product.priceEth.toString())
-      });
-
-      await tx.wait();
-
-      setStatus("Payment successful");
-
-      removeFromCart(index);
-
-      loadWalletBalance(account);
-      loadContractBalance();
-    } catch(err){
-      console.error(err);
-      setStatus("Payment failed");
-    }
+    setCart(updated);
+    localStorage.setItem("cart", JSON.stringify(updated));
   }
 
   function removeFromCart(index){
@@ -95,6 +31,26 @@ export default function Cart() {
     localStorage.setItem("cart",JSON.stringify(updated));
   }
 
+  function checkout(){
+    if(!user){
+      alert("Only authorized users");
+      return;
+    }
+
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    orders.push({
+      user: user.email,
+      items: cart,
+      date: new Date().toISOString()
+    });
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+    localStorage.removeItem("cart");
+
+    setCart([]);
+    alert("Заказ оформлен");
+  }
 
   return (
     <div className="cart-container">
