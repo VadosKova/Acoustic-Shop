@@ -11,8 +11,13 @@ export default function AdminPanel() {
   const [rating,setRating] = useState("");
   const [priceEth,setPriceEth] = useState("");
   const [image,setImage] = useState("");
+  const [description,setDescription] = useState("");
+  const [inStock,setInStock] = useState(true);
 
   const [editingId,setEditingId] = useState(null);
+
+  const [showOrders,setShowOrders] = useState(false);
+  const [orders,setOrders] = useState([]);
 
   const categories = [
     "Навушники",
@@ -39,6 +44,11 @@ export default function AdminPanel() {
     setProducts(res.data);
   }
 
+  function loadOrders(){
+    const data = JSON.parse(localStorage.getItem("orders")) || [];
+    setOrders(data);
+  }
+
   function handleImageUpload(e){
     const file = e.target.files[0];
     if(!file) return;
@@ -62,7 +72,9 @@ export default function AdminPanel() {
       category,
       rating: parseFloat(rating),
       priceEth: parseFloat(priceEth),
-      imageUrl: image
+      imageUrl: image,
+      description,
+      inStock
     };
 
     await API.post("/api/products",product);
@@ -115,6 +127,13 @@ export default function AdminPanel() {
   return (
     <div className="catalog-container">
       <Navbar cartCount={cart.length} />
+
+      <button onClick={()=>{
+          loadOrders();
+          setShowOrders(!showOrders);
+        }}>
+          История заказов
+      </button>
       
       <div className="catalog-admin">
         <h2>Product Manager</h2>
@@ -186,6 +205,16 @@ export default function AdminPanel() {
             </div>
           ))}
         </div>
+        {showOrders && (
+          <div className="orders-panel">
+            {orders.map((o,i)=>(
+              <div key={i}>
+                <p>{o.user}</p>
+                <p>{new Date(o.date).toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
