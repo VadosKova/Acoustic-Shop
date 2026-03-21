@@ -13,6 +13,11 @@ export default function Cart() {
     setUser(u);
   },[]);
 
+  function renderStars(rating = 0) {
+    const fullStars = Math.round(rating);
+    return "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
+  }
+
   function updateQuantity(index, delta){
     const updated = [...cart];
     const item = updated[index];
@@ -54,19 +59,9 @@ export default function Cart() {
 
   return (
     <div className="cart-container">
-      <Navbar/>
+      <Navbar cartCount={cart.length}/>
 
       <h2>Shopping Cart</h2>
-      <button onClick={connectWallet}>Connect MetaMask</button>
-
-      <p><b>Wallet:</b> {account || "not connected"}</p>
-      {account && (
-        <>
-          <p><b>Your balance:</b> {walletBalance} ETH</p>
-          <p><b>Contract balance:</b> {contractBalance} ETH</p>
-        </>
-      )}
-      <p>{status}</p>
 
       <div className="cart-list">
         {cart.length === 0 && <p>Cart is empty</p>}
@@ -77,24 +72,35 @@ export default function Cart() {
 
             <div className="cart-info">
               <h4>{product.name}</h4>
-              <p>⭐ {product.rating}</p>
+              <span style={{ color: "#f5a623", fontSize: 20 }}>
+                {renderStars(product.rating)}
+              </span>
               <p>{product.priceEth} ETH</p>
+
+              <div className="quantity-box">
+                <button
+                  disabled={product.quantity === 1}
+                  onClick={()=>updateQuantity(index,-1)}
+                >-</button>
+
+                <span>{product.quantity}</span>
+
+                <button onClick={()=>updateQuantity(index,1)}>+</button>
+              </div>
             </div>
 
             <div className="cart-actions">
-              <button
-                className="checkout-button"
-                onClick={()=>checkout(product,index)}
-              >
-                Checkout
-              </button>
-
               <button
                 className="remove-button"
                 onClick={()=>removeFromCart(index)}
               >
                 Remove
               </button>
+              {cart.length > 0 && (
+                <button className="checkout-btn" onClick={checkout}>
+                  Оформити замовлення
+                </button>
+              )}
             </div>
           </div>
         ))}
