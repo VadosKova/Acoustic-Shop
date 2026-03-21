@@ -20,6 +20,8 @@ export default function Profile() {
   const [editEmail, setEditEmail] = useState("");
   const [editAvatar, setEditAvatar] = useState("");
 
+  const [favorites, setFavorites] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -176,6 +178,18 @@ export default function Profile() {
 
     reader.readAsDataURL(file);
   }
+
+  useEffect(()=>{
+    const fav = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(fav);
+
+    const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    if(user){
+      const userOrders = allOrders.filter(o => o.user === user.email);
+      setOrders(userOrders);
+    }
+  },[user]);
 
   if (!user) {
     return (
@@ -347,6 +361,49 @@ export default function Profile() {
         )}
 
         <button className="logout" onClick={logout}>Log out</button>
+      </div>
+
+      <div className="profile-section">
+        <h3>Обране</h3>
+
+        {favorites.length === 0 ? (
+          <p>No choosen yet</p>
+        ) : (
+          favorites.map((p,i)=>(
+            <div key={i} className="fav-item">
+              <img src={p.imageUrl}/>
+              <p>{p.name}</p>
+
+              <button onClick={()=>{
+                const updated = favorites.filter(f => f.id !== p.id);
+                localStorage.setItem("favorites", JSON.stringify(updated));
+                setFavorites(updated);
+              }}>
+                Remove
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="profile-section">
+        <h3>Історія замовлень</h3>
+
+        {orders.length === 0 ? (
+          <p>No orders</p>
+        ) : (
+          orders.map((o,i)=>(
+            <div key={i} className="order-item">
+              <p><b>Дата:</b> {new Date(o.date).toLocaleString()}</p>
+
+              {o.items.map((item,idx)=>(
+                <div key={idx}>
+                  {item.name} x {item.quantity}
+                </div>
+              ))}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
