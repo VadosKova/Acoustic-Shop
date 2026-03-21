@@ -433,15 +433,6 @@ button:disabled{
   gap: 10px;
 }
 
-.checkout-button{
-  background: #42b883;
-  border: none;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
 .remove-button{
   background: #ff4d4d;
   border: none;
@@ -463,4 +454,50 @@ button:disabled{
 
 .disconnect{
   background:#ff4d4d;
+}
+
+.quantity-box{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:10px;
+}
+
+.quantity-box button{
+  padding:4px 10px;
+  cursor:pointer;
+}
+
+.checkout-btn{
+  margin-top:20px;
+  padding:12px 20px;
+  background:#42b883;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.profile-section{
+  width:100%;
+  margin-top:20px;
+}
+
+.fav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.fav-item img{
+  width:50px;
+  height:50px;
+  object-fit:cover;
+}
+
+.order-item{
+  border:1px solid #eee;
+  padding:10px;
+  margin-bottom:10px;
 }
