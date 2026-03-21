@@ -50,13 +50,26 @@ export default function Shop() {
     setFilteredProducts(result)
   },[searchTerm,category,products])
 
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(saved);
+  }, []);
+
   function addToCart(product){
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
     const exists = saved.find(p => p.id === product.id);
 
-    if (exists) return;
+    let updated;
 
-    const updated = [...saved, product];
+    if (exists) {
+      updated = saved.map(p =>
+        p.id === product.id
+          ? { ...p, quantity: (p.quantity || 1) + 1 }
+          : p
+      );
+    } else {
+      updated = [...saved, { ...product, quantity: 1 }];
+    }
 
     localStorage.setItem("cart", JSON.stringify(updated));
     setCart(updated);

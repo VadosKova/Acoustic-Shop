@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { API } from "../../api/api";
 import Navbar from "../components/Navbar";
 
-export default function Catalog() {
+export default function AdminPanel() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [products,setProducts] = useState([]);
 
