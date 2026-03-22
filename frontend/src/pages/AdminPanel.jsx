@@ -63,6 +63,13 @@ export default function AdminPanel() {
     const file = e.target.files[0];
     if(!file) return;
 
+    const allowedTypes = ["image/png","image/jpeg","image/jpg","image/webp"];
+
+    if(!allowedTypes.includes(file.type)){
+      alert("Invalid image format (PNG, JPG, JPEG, WEBP)");
+      return;
+    }
+
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -83,7 +90,10 @@ export default function AdminPanel() {
       !priceEth ||
       ratingValue === 0 ||
       !description.trim() ||
-      !specs.trim()
+      !image ||
+      !specs.material.trim() ||
+      !specs.color.trim() ||
+      !specs.seller.trim()
     ){
       alert("Fill all fields correctly");
       return;
@@ -120,16 +130,42 @@ export default function AdminPanel() {
     setRating(p.rating);
     setPriceEth(p.priceEth);
     setImage(p.imageUrl);
+    setDescription(p.description || "");
+
+    setSpecs({
+      material: p.specs?.material || "",
+      color: p.specs?.color || "",
+      quantity: p.specs?.quantity || 0,
+      seller: p.specs?.seller || ""
+    });
   }
 
   async function updateProduct(){
+    if(
+      !name.trim() ||
+      !category.trim() ||
+      !priceEth ||
+      ratingValue === 0 ||
+      !description.trim() ||
+      !image ||
+      !specs.material.trim() ||
+      !specs.color.trim() ||
+      !specs.seller.trim()
+    ){
+      alert("Fill all fields correctly");
+      return;
+    }
+
     const product = {
       id: editingId,
       name,
       category,
       rating: parseFloat(rating),
       priceEth: parseFloat(priceEth),
-      imageUrl: image
+      imageUrl: image,
+      description,
+      specs,
+      inStock: specs.quantity > 0
     };
 
     await API.put(`/api/products/${editingId}`,product);
@@ -272,9 +308,10 @@ export default function AdminPanel() {
                 <h4>{p.name}</h4>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ color: "#f5a623", fontSize: 18 }}>
+                  <span style={{ color: "#f5a623", fontSize: 20 }}>
                     {renderStars(p.rating)}
-                  </span>
+                  </span><br/>
+                  <ReviewIcon />
                   <span>({p.reviewsCount || 0})</span>
                 </div>
 
@@ -300,6 +337,79 @@ export default function AdminPanel() {
             </div>
           ))}
         </div>
+        {editingId && (
+          <div className="auth-card">
+            <h3>Edit Product</h3>
+
+            <div className="image-upload">
+              {image ? (
+                <img src={image} className="product-preview"/>
+              ) : (
+                <div className="image-placeholder">Upload Image</div>
+              )}
+              <input type="file" onChange={handleImageUpload}/>
+            </div>
+
+            <input
+              placeholder="Name"
+              value={name}
+              onChange={e=>setName(e.target.value)}
+            />
+
+            <select value={category} onChange={e=>setCategory(e.target.value)}>
+              {categories.map(c => <option key={c}>{c}</option>)}
+            </select>
+
+            <div style={{ display: "flex", gap: 4 }}>
+              {[1,2,3,4,5].map(n => (
+                <span
+                  key={n}
+                  onClick={() => setRatingValue(n)}
+                  style={{
+                    cursor: "pointer",
+                    fontSize: 20,
+                    color: n <= ratingValue ? "#f5a623" : "#ccc"
+                  }}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+
+            <input
+              placeholder="Price"
+              value={priceEth}
+              onChange={e=>setPriceEth(e.target.value)}
+            />
+
+            <input
+              placeholder="Description"
+              value={description}
+              onChange={e=>setDescription(e.target.value)}
+            />
+
+            <input
+              placeholder="Material"
+              value={specs.material}
+              onChange={e=>setSpecs({...specs, material: e.target.value})}
+            />
+
+            <input
+              placeholder="Color"
+              value={specs.color}
+              onChange={e=>setSpecs({...specs, color: e.target.value})}
+            />
+
+            <input
+              placeholder="Seller"
+              value={specs.seller}
+              onChange={e=>setSpecs({...specs, seller: e.target.value})}
+            />
+
+            <button onClick={updateProduct}>Save</button>
+            <button onClick={()=>setEditingId(null)}>Cancel</button>
+          </div>
+        )}
         {showOrders && (
           <div className="orders-panel">
             {orders.map((o,i)=>(
