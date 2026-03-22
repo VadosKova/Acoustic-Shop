@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { API } from "../../api/api";
 import Navbar from "../components/Navbar";
+import ReviewIcon from "../assets/icons/ReviewIcon";
 
 export default function AdminPanel() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -61,6 +62,11 @@ export default function AdminPanel() {
     reader.readAsDataURL(file);
   }
 
+  function renderStars(rating = 0) {
+    const fullStars = Math.round(rating);
+    return "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
+  }
+
   async function addProduct(){
     if(!name || !category || !rating || !priceEth){
       alert("Fill all fields");
@@ -114,6 +120,23 @@ export default function AdminPanel() {
     setEditingId(null);
     clearForm();
     loadProducts();
+  }
+
+  async function updateStock(index, delta) {
+    const updated = [...products];
+    const item = updated[index];
+
+    const currentQty = item.specs?.quantity || 0;
+    const newQty = currentQty + delta;
+
+    if (newQty < 0) return;
+
+    item.specs.quantity = newQty;
+    item.inStock = newQty > 0;
+
+    setProducts(updated);
+
+    await API.put(`/api/products/${item.id}`, item);
   }
 
   function clearForm(){
@@ -186,21 +209,39 @@ export default function AdminPanel() {
         </div>
 
         <h3>All Products</h3>
-        <div className="catalog-products">
-          {products.map(p => (
-            <div key={p.id} className="catalog-product-card">
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {products.map((p, index) => (
+            <div key={p.id} className="cart-item">
               <img src={p.imageUrl} />
 
-              <div className="product-info">
+              <div className="cart-info">
                 <h4>{p.name}</h4>
-                <p>{p.category}</p>
-                <p>⭐ {p.rating}</p>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ color: "#f5a623", fontSize: 18 }}>
+                    {renderStars(p.rating)}
+                  </span>
+                  <span>({p.reviewsCount || 0})</span>
+                </div>
+
+                <p style={{ color: p.inStock ? "green" : "red" }}>
+                  {p.inStock ? "In stock" : "Out of stock"}
+                </p>
+
                 <p>{p.priceEth} ETH</p>
+
+                <div className="quantity-box">
+                  <button disabled={p.specs?.quantity <= 0}
+                    onClick={() => updateStock(index, -1)}
+                  >-</button>
+                  <span>{p.specs?.quantity || 0}</span>
+                  <button onClick={() => updateStock(index, 1)}>+</button>
+                </div>
               </div>
 
-              <div className="product-actions">
-                <button onClick={()=>editProduct(p)}>Edit</button>
-                <button onClick={()=>deleteProduct(p.id)}>Delete</button>
+              <div className="cart-actions">
+                <button onClick={() => editProduct(p)}>Edit</button>
+                <button onClick={() => deleteProduct(p.id)}>Delete</button>
               </div>
             </div>
           ))}
