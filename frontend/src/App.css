@@ -322,26 +322,41 @@ button:disabled{
 
 .product-form{
   display: grid;
-  grid-template-columns: 200px 1fr 1fr 1fr 1fr auto;
-  gap: 10px;
+  grid-template-columns: 200px 1fr 1fr;
+  gap: 15px;
   margin-bottom: 40px;
-  align-items: center;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
 }
 
 .product-form input,
 .product-form select{
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.product-form input:focus,
+.product-form select:focus{
+  border-color: #42b883;
+  box-shadow: 0 0 0 2px rgba(66,184,131,0.15);
 }
 
 .product-form button{
-  background: #222;
+  grid-column: span 3;
+  background: #42b883;
   color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
+}
+
+.product-form button:hover{
+  background: #369b6d;
 }
 
 .catalog-products{
