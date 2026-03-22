@@ -20,6 +20,8 @@ export default function AdminPanel() {
   const [showOrders,setShowOrders] = useState(false);
   const [orders,setOrders] = useState([]);
 
+  const [ratingValue, setRatingValue] = useState(0);
+
   const categories = [
     "Навушники",
     "Портативні колонки",
@@ -76,7 +78,7 @@ export default function AdminPanel() {
     const product = {
       name,
       category,
-      rating: parseFloat(rating),
+      rating: ratingValue,
       priceEth: parseFloat(priceEth),
       imageUrl: image,
       description,
@@ -187,11 +189,21 @@ export default function AdminPanel() {
             ))}
           </select>
 
-          <input
-            placeholder="Rating"
-            value={rating}
-            onChange={e=>setRating(e.target.value)}
-          />
+          <div style={{ display: "flex", gap: 4 }}>
+            {[1,2,3,4,5].map(n => (
+              <span
+                key={n}
+                onClick={() => setRatingValue(n)}
+                style={{
+                  cursor: "pointer",
+                  fontSize: 20,
+                  color: n <= ratingValue ? "#f5a623" : "#ccc"
+                }}
+              >
+                ★
+              </span>
+            ))}
+          </div>
 
           <input
             placeholder="Price ETH"
