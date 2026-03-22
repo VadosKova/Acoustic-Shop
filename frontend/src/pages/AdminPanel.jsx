@@ -115,6 +115,7 @@ export default function AdminPanel() {
     await API.post("/api/products",product);
     clearForm();
     loadProducts();
+    alert("Product added successfully!");
   }
 
   async function deleteProduct(id){
@@ -122,6 +123,7 @@ export default function AdminPanel() {
 
     await API.delete(`/api/products/${id}`);
     loadProducts();
+    alert("Product deleted!");
   }
 
   function editProduct(p){
@@ -175,6 +177,7 @@ export default function AdminPanel() {
     setEditingId(null);
     clearForm();
     loadProducts();
+    alert("Product edited!");
   }
 
   async function updateStock(index, delta) {
