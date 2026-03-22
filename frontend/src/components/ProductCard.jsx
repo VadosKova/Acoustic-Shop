@@ -5,7 +5,7 @@ import HeartIcon from "../assets/icons/HeartIcon";
 import ReviewIcon from "../assets/icons/ReviewIcon";
 import CartIcon from "../assets/icons/CartIcon";
 
-export default function ProductCard({ product, onBuy }) {
+export default function ProductCard({ product, onBuy, hideFavorite = false }) {
   const navigate = useNavigate();
   const [fav, setFav] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -159,12 +159,14 @@ export default function ProductCard({ product, onBuy }) {
       }}>
         {!isAdmin && (
           <>
-            <div style={{ cursor: "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
-              <HeartIcon
-                filled={fav}
-                onClick={toggleFavorite}
-              />
-            </div>
+            {!hideFavorite && (
+              <div style={{ cursor: "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
+                <HeartIcon
+                  filled={fav}
+                  onClick={toggleFavorite}
+                />
+              </div>
+            )}
 
             <div onClick={addToCart} style={{ cursor: "pointer" }}>
               <CartIcon />
