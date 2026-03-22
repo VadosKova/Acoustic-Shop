@@ -22,6 +22,13 @@ export default function AdminPanel() {
 
   const [ratingValue, setRatingValue] = useState(0);
 
+  const [specs, setSpecs] = useState({
+    material: "",
+    color: "",
+    quantity: 0,
+    seller: ""
+  });
+
   const categories = [
     "Навушники",
     "Портативні колонки",
@@ -70,8 +77,15 @@ export default function AdminPanel() {
   }
 
   async function addProduct(){
-    if(!name || !category || !rating || !priceEth){
-      alert("Fill all fields");
+    if(
+      !name.trim() ||
+      !category.trim() ||
+      !priceEth ||
+      ratingValue === 0 ||
+      !description.trim() ||
+      !specs.trim()
+    ){
+      alert("Fill all fields correctly");
       return;
     }
 
@@ -82,7 +96,8 @@ export default function AdminPanel() {
       priceEth: parseFloat(priceEth),
       imageUrl: image,
       description,
-      inStock
+      specs,
+      inStock: specs.quantity > 0,
     };
 
     await API.post("/api/products",product);
@@ -209,6 +224,33 @@ export default function AdminPanel() {
             placeholder="Price ETH"
             value={priceEth}
             onChange={e=>setPriceEth(e.target.value)}
+          />
+
+          <input
+            placeholder="Description"
+            value={description}
+            onChange={e=>setDescription(e.target.value)}
+          />
+
+          <input
+            placeholder="Material"
+            onChange={e=>setSpecs({...specs, material: e.target.value})}
+          />
+
+          <input
+            placeholder="Color"
+            onChange={e=>setSpecs({...specs, color: e.target.value})}
+          />
+
+          <input
+            placeholder="Quantity"
+            type="number"
+            onChange={e=>setSpecs({...specs, quantity: parseInt(e.target.value)})}
+          />
+
+          <input
+            placeholder="Seller"
+            onChange={e=>setSpecs({...specs, seller: e.target.value})}
           />
 
           {editingId ? (
