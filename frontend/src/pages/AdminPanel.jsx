@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { API } from "../../api/api";
 import Navbar from "../components/Navbar";
 import ReviewIcon from "../assets/icons/ReviewIcon";
+import EditIcon from "../assets/icons/EditIcon";
+import DeleteIcon from "../assets/icons/DeleteIcon";
 
 export default function AdminPanel() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -331,8 +333,8 @@ export default function AdminPanel() {
               </div>
 
               <div className="cart-actions">
-                <button onClick={() => editProduct(p)}>Edit</button>
-                <button onClick={() => deleteProduct(p.id)}>Delete</button>
+                <button onClick={() => editProduct(p)} style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#cbb512" }}>Edit <EditIcon size={20}/></button>
+                <button onClick={() => deleteProduct(p.id)} style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "#ff4d4d" }}>Delete<DeleteIcon size={20}/></button>
               </div>
             </div>
           ))}

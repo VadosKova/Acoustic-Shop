@@ -384,6 +384,10 @@ button:disabled{
   border-radius: 8px;
 }
 
+.image-upload img {
+  object-fit: contain;
+}
+
 .image-placeholder{
   width: 180px;
   height: 120px;
