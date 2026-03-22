@@ -104,7 +104,7 @@ export default function AdminPanel() {
     const product = {
       name,
       category,
-      rating: ratingValue,
+      baseRating: ratingValue,
       priceEth: parseFloat(priceEth),
       imageUrl: image,
       description,
@@ -200,6 +200,15 @@ export default function AdminPanel() {
     setRating("");
     setPriceEth("");
     setImage("");
+    setDescription("");
+    setRatingValue(0);
+
+    setSpecs({
+      material: "",
+      color: "",
+      quantity: 0,
+      seller: ""
+    });
   }
 
   return (
