@@ -20,8 +20,15 @@ export default function ProductCard({ product, onBuy }) {
     e.stopPropagation();
 
     const user = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = user?.email === "admin@gmail.com";
+
     if(!user){
       alert("You need to Sign In");
+      return;
+    }
+
+    if(isAdmin){
+      alert("Admin cannot use favorites");
       return;
     }
 
@@ -39,6 +46,19 @@ export default function ProductCard({ product, onBuy }) {
 
   function addToCart(e) {
     e.stopPropagation();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = user?.email === "admin@gmail.com";
+
+    if(!user){
+      alert("You need to Sign In");
+      return;
+    }
+
+    if(isAdmin){
+      alert("Admin cannot use cart");
+      return;
+    }
 
     onBuy && onBuy(product);
   }
@@ -137,16 +157,20 @@ export default function ProductCard({ product, onBuy }) {
         transform: hovered ? "translateY(0)" : "translateY(6px)",
         transition: "all 0.25s ease"
       }}>
-        <div style={{ cursor: "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
-          <HeartIcon
-            filled={fav}
-            onClick={toggleFavorite}
-          />
-        </div>
+        {!isAdmin && (
+          <>
+            <div style={{ cursor: "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
+              <HeartIcon
+                filled={fav}
+                onClick={toggleFavorite}
+              />
+            </div>
 
-        <div onClick={addToCart} style={{ cursor: "pointer" }}>
-          <CartIcon />
-        </div>
+            <div onClick={addToCart} style={{ cursor: "pointer" }}>
+              <CartIcon />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

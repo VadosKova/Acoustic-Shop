@@ -31,8 +31,15 @@ export default function ProductDetails() {
     e.stopPropagation();
 
     const user = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = user?.email === "admin@gmail.com";
+
     if(!user){
       alert("You need to Sign In");
+      return;
+    }
+
+    if(isAdmin){
+      alert("Admin cannot use favorites");
       return;
     }
 
@@ -49,6 +56,19 @@ export default function ProductDetails() {
   }
 
   function addToCart() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = user?.email === "admin@gmail.com";
+
+    if(!user){
+      alert("You need to Sign In");
+      return;
+    }
+
+    if(isAdmin){
+      alert("Admin cannot use cart");
+      return;
+    }
+
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
 
     const exists = saved.find(p => p.id === product.id);
@@ -128,33 +148,37 @@ export default function ProductDetails() {
             {product.inStock ? "In stock" : "Out of stock"}
           </p>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-            <h3>{product.priceEth} ETH</h3>
+          {!isAdmin && (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+                <h3>{product.priceEth} ETH</h3>
 
-            <button
-              onClick={addToCart}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "10px 16px",
-                background: "#42b883",
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                cursor: "pointer"
-              }}
-            >
-              <CartIcon /> Buy
-            </button>
+                <button
+                  onClick={addToCart}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "10px 16px",
+                    background: "#42b883",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 8,
+                    cursor: "pointer"
+                  }}
+                >
+                  <CartIcon /> Buy
+                </button>
 
-            <div style={{ cursor: "pointer" }}>
-              <HeartIcon
-                filled={fav}
-                onClick={(toggleFavorite)}
-              />
-            </div>
-          </div>
+                <div style={{ cursor: "pointer" }}>
+                  <HeartIcon
+                    filled={fav}
+                    onClick={(toggleFavorite)}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
