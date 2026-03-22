@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { API } from "../../api/api";
 import { ethers } from "ethers";
 import Navbar from "../components/Navbar";
+import ProductCard from "./ProductCard";
 
 export default function Profile() {
   const [mode, setMode] = useState("register");
@@ -410,20 +411,20 @@ export default function Profile() {
         {favorites.length === 0 ? (
           <p>No choosen yet</p>
         ) : (
-          favorites.map((p,i)=>(
-            <div key={i} className="fav-item">
-              <img src={p.imageUrl}/>
-              <p>{p.name}</p>
-
-              <button onClick={()=>{
-                const updated = favorites.filter(f => f.id !== p.id);
-                localStorage.setItem("favorites", JSON.stringify(updated));
-                setFavorites(updated);
-              }}>
-                Remove
-              </button>
-            </div>
-          ))
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+            gap: 20,
+            marginTop: 20
+          }}>
+            {favorites.map((p, i) => (
+              <ProductCard
+                key={i}
+                product={p}
+                hideFavorite={true}
+              />
+            ))}
+          </div>
         )}
       </div>
 
