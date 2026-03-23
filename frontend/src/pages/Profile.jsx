@@ -47,6 +47,13 @@ export default function Profile() {
   }, [account]);
 
   async function connectWallet() {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if(!user){
+      alert("You need to Sign In");
+      return;
+    }
+    
     if (!window.ethereum) {
       alert("Please install MetaMask!");
       return;
@@ -416,13 +423,14 @@ export default function Profile() {
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
             gap: 20,
-            marginTop: 20
+            marginTop: 20,
+            marginLeft: 20
           }}>
             {favorites.map((p, i) => (
               <ProductCard
                 key={i}
                 product={p}
-                hideFavorite={true}
+                hideFavorite={false}
                 isAdmin={user?.email === "admin@gmail.com"}
               />
             ))}
