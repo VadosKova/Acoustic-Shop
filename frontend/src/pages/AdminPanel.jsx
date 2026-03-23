@@ -15,7 +15,6 @@ export default function AdminPanel() {
   const [priceEth,setPriceEth] = useState("");
   const [image,setImage] = useState("");
   const [description,setDescription] = useState("");
-  const [inStock,setInStock] = useState(true);
 
   const [editingId,setEditingId] = useState(null);
 
