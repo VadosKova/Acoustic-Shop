@@ -27,6 +27,14 @@ export default function Profile() {
 
   const navigate = useNavigate();
 
+  const removeFromFavorites = (productId) => {
+    setFavorites((prevFavorites) => {
+      const updated = prevFavorites.filter(p => p.id !== productId);
+      localStorage.setItem("favorites", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
 
@@ -239,12 +247,6 @@ export default function Profile() {
   useEffect(()=>{
     const fav = JSON.parse(localStorage.getItem("favorites")) || [];
     setFavorites(fav);
-
-    const removeFromFavorites = (productId) => {
-      const updated = favorites.filter(p => p.id !== productId);
-      setFavorites(updated);
-      localStorage.setItem("favorites", JSON.stringify(updated));
-    };
 
     const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
 
