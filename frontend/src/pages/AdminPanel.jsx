@@ -254,7 +254,7 @@ export default function AdminPanel() {
             ))}
           </select>
 
-          <div style={{ display: "flex", gap: 4 }}>
+          <div style={{ display: "flex", gap: 4, marginLeft: 40, marginTop: 10 }}>
             {[1,2,3,4,5].map(n => (
               <span
                 key={n}

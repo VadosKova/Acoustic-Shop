@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { API } from "../../api/api";
 import { ethers } from "ethers";
 import Navbar from "../components/Navbar";
-import ProductCard from "./ProductCard";
+import ProductCard from "../components/ProductCard";
 
 export default function Profile() {
   const [mode, setMode] = useState("register");
@@ -422,6 +422,7 @@ export default function Profile() {
                 key={i}
                 product={p}
                 hideFavorite={true}
+                isAdmin={user?.email === "admin@gmail.com"}
               />
             ))}
           </div>

@@ -5,7 +5,7 @@ import HeartIcon from "../assets/icons/HeartIcon";
 import ReviewIcon from "../assets/icons/ReviewIcon";
 import CartIcon from "../assets/icons/CartIcon";
 
-export default function ProductCard({ product, onBuy, hideFavorite = false }) {
+export default function ProductCard({ product, onBuy, hideFavorite = false, isAdmin }) {
   const navigate = useNavigate();
   const [fav, setFav] = useState(false);
   const [hovered, setHovered] = useState(false);

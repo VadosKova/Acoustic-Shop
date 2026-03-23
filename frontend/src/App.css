@@ -322,7 +322,7 @@ button:disabled{
 
 .product-form{
   display: grid;
-  grid-template-columns: 200px 1fr 1fr;
+  grid-template-columns: 195px 1fr 1fr 1fr 1fr;
   gap: 15px;
   margin-bottom: 40px;
   padding: 20px;
@@ -333,6 +333,7 @@ button:disabled{
 
 .product-form input,
 .product-form select{
+  height: 50px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -346,12 +347,13 @@ button:disabled{
 }
 
 .product-form button{
-  grid-column: span 3;
   background: #42b883;
   color: white;
   padding: 12px;
   border-radius: 10px;
   font-weight: 600;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
