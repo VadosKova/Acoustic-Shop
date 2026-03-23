@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API } from "../../api/api";
+import { ethers } from "ethers";
 import Navbar from "../components/Navbar";
 import ReviewIcon from "../assets/icons/ReviewIcon";
 import EditIcon from "../assets/icons/EditIcon";
@@ -63,6 +64,43 @@ export default function AdminPanel() {
   async function updateOrderStatus(id, status){
     await API.put(`/api/orders/${id}/status`, status);
     loadOrders();
+  }
+
+  async function searchCities(query){
+    const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: "49e22586b343465c346f07a2b3373af5",
+        modelName: "Address",
+        calledMethod: "searchSettlements",
+        methodProperties: {
+          CityName: query,
+          Limit: 5
+        }
+      })
+    });
+
+    const data = await res.json();
+    return data.data[0].Addresses;
+  }
+
+  async function getWarehouses(cityRef){
+    const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: "49e22586b343465c346f07a2b3373af5",
+        modelName: "Address",
+        calledMethod: "getWarehouses",
+        methodProperties: {
+          CityRef: cityRef
+        }
+      })
+    });
+
+    const data = await res.json();
+    return data.data;
   }
 
   function handleImageUpload(e){
@@ -430,10 +468,39 @@ export default function AdminPanel() {
         )}
         {showOrders && (
           <div className="orders-panel">
-            {orders.map((o,i)=>(
-              <div key={i}>
-                <p>{o.user}</p>
-                <p>{new Date(o.date).toLocaleString()}</p>
+            {orders.map((o) => (
+              <div key={o.id} style={{
+                border: "1px solid #ddd",
+                padding: 10,
+                marginBottom: 10
+              }}>
+                <p><b>User:</b> {o.userId}</p>
+                <p><b>Date:</b> {new Date(o.createdAt).toLocaleString()}</p>
+                <p><b>Status:</b> {o.status}</p>
+
+                <div>
+                  {o.items.map((item,i)=>(
+                    <div key={i}>
+                      {item.name} x {item.quantity}
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ marginTop: 10, display: "flex", gap: 10 }}>
+                  <button
+                    style={{ background: "green", color: "#fff" }}
+                    onClick={() => updateOrderStatus(o.id, "Accepted")}
+                  >
+                    Accept
+                  </button>
+
+                  <button
+                    style={{ background: "red", color: "#fff" }}
+                    onClick={() => updateOrderStatus(o.id, "Rejected")}
+                  >
+                    Reject
+                  </button>
+                </div>
               </div>
             ))}
           </div>
