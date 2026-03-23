@@ -65,43 +65,6 @@ export default function AdminPanel() {
     loadOrders();
   }
 
-  async function searchCities(query){
-    const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: "49e22586b343465c346f07a2b3373af5",
-        modelName: "Address",
-        calledMethod: "searchSettlements",
-        methodProperties: {
-          CityName: query,
-          Limit: 5
-        }
-      })
-    });
-
-    const data = await res.json();
-    return data.data[0].Addresses;
-  }
-
-  async function getWarehouses(cityRef){
-    const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: "49e22586b343465c346f07a2b3373af5",
-        modelName: "Address",
-        calledMethod: "getWarehouses",
-        methodProperties: {
-          CityRef: cityRef
-        }
-      })
-    });
-
-    const data = await res.json();
-    return data.data;
-  }
-
   function handleImageUpload(e){
     const file = e.target.files[0];
     if(!file) return;
