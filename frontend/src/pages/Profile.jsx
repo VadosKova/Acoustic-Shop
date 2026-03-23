@@ -240,6 +240,12 @@ export default function Profile() {
     const fav = JSON.parse(localStorage.getItem("favorites")) || [];
     setFavorites(fav);
 
+    const removeFromFavorites = (productId) => {
+      const updated = favorites.filter(p => p.id !== productId);
+      setFavorites(updated);
+      localStorage.setItem("favorites", JSON.stringify(updated));
+    };
+
     const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
 
     if(user){
@@ -435,10 +441,11 @@ export default function Profile() {
           }}>
             {favorites.map((p, i) => (
               <ProductCard
-                key={i}
+                key={p.id || i}
                 product={p}
                 hideFavorite={false}
                 isAdmin={user?.email === "admin@gmail.com"}
+                onFavoriteToggle={() => removeFromFavorites(p.id)}
               />
             ))}
           </div>

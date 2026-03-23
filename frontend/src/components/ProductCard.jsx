@@ -5,7 +5,7 @@ import HeartIcon from "../assets/icons/HeartIcon";
 import ReviewIcon from "../assets/icons/ReviewIcon";
 import CartIcon from "../assets/icons/CartIcon";
 
-export default function ProductCard({ product, onBuy, hideFavorite = false, isAdmin }) {
+export default function ProductCard({ product, onBuy, hideFavorite = false, isAdmin, onFavoriteToggle }) {
   const navigate = useNavigate();
   const [fav, setFav] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -38,6 +38,10 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       const updated = saved.filter(p => p.id !== product.id);
       localStorage.setItem("favorites", JSON.stringify(updated));
       setFav(false);
+
+      if (onFavoriteToggle) {
+        onFavoriteToggle(product.id);
+      }
     } else {
       localStorage.setItem("favorites", JSON.stringify([...saved, product]));
       setFav(true);
