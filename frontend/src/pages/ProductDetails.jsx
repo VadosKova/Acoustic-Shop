@@ -164,7 +164,7 @@ export default function ProductDetails() {
                     cursor: "pointer"
                   }}
                 >
-                  <CartIcon /> Buy
+                  <CartIcon color="#fff" /> Buy
                 </button>
 
                 <div style={{ cursor: "pointer" }}>

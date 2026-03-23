@@ -87,8 +87,9 @@ export default function Profile() {
       return;
     }
 
-    if(!validatePassword(password)){
-      alert("At least 6 characters with digits");
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      alert(passwordError);
       return;
     }
 
