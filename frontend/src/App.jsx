@@ -2,6 +2,7 @@ import Shop from "./pages/Shop";
 import ProductDetails from "./pages/ProductDetails";
 import AdminPanel from "./pages/AdminPanel";
 import Cart from "./pages/Cart";
+import OrderDetails from "./pages/OrderDetails";
 import Profile from "./pages/Profile";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import './App.css'
@@ -33,6 +34,7 @@ function App() {
           } 
         />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/order-details" element={<OrderDetails />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
