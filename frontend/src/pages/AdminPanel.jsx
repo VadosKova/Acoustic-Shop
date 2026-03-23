@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { API } from "../../api/api";
-import { ethers } from "ethers";
 import Navbar from "../components/Navbar";
 import ReviewIcon from "../assets/icons/ReviewIcon";
 import EditIcon from "../assets/icons/EditIcon";

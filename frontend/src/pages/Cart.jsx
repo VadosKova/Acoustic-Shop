@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import DeleteIcon from "../assets/icons/DeleteIcon";
 
 export default function Cart() {
   const [cart,setCart] = useState([]);
   const [user,setUser] = useState(null);
+
+  const navigate = useNavigate();
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.priceEth * item.quantity,
+    0
+  );
 
   useEffect(()=>{
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -51,11 +59,8 @@ export default function Cart() {
       date: new Date().toISOString()
     });
 
-    localStorage.setItem("orders", JSON.stringify(orders));
-    localStorage.removeItem("cart");
-
-    setCart([]);
-    alert("Заказ оформлен");
+    localStorage.setItem("checkout_cart", JSON.stringify(cart));
+    navigate("/order-details");
   }
 
   return (
@@ -76,7 +81,10 @@ export default function Cart() {
               <span style={{ color: "#f5a623", fontSize: 20 }}>
                 {renderStars(product.rating)}
               </span>
-              <p>{product.priceEth} ETH</p>
+              <p>
+                {product.priceEth} ETH × {product.quantity} ={" "}
+                <b>{(product.priceEth * product.quantity).toFixed(4)} ETH</b>
+              </p>
 
               <div className="quantity-box">
                 <button
@@ -103,6 +111,11 @@ export default function Cart() {
                 </button>
               )}
             </div>
+            {cart.length > 0 && (
+              <h3 style={{ marginTop: 20 }}>
+                Total: {totalPrice.toFixed(4)} ETH
+              </h3>
+            )}
           </div>
         ))}
       </div>
