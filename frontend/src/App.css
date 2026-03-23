@@ -569,6 +569,7 @@ button:disabled{
 
   transition: all 0.2s ease;
   background: #fafafa;
+  color: #000;
 }
 
 .review-textarea:focus {

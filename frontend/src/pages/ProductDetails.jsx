@@ -17,6 +17,9 @@ export default function ProductDetails() {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviews, setReviews] = useState([]);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user?.email === "admin@gmail.com";
+
   useEffect(() => {
     API.get(`/api/products/${id}`).then(res => setProduct(res.data));
   }, [id]);
@@ -29,9 +32,6 @@ export default function ProductDetails() {
 
   function toggleFavorite(e) {
     e.stopPropagation();
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    const isAdmin = user?.email === "admin@gmail.com";
 
     if(!user){
       alert("You need to Sign In");
@@ -56,9 +56,6 @@ export default function ProductDetails() {
   }
 
   function addToCart() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const isAdmin = user?.email === "admin@gmail.com";
-
     if(!user){
       alert("You need to Sign In");
       return;

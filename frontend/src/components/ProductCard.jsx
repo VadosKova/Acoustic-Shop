@@ -102,7 +102,6 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#f5f5f5",
         flexShrink: 0
       }}>
         <img
