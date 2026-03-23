@@ -55,9 +55,14 @@ export default function AdminPanel() {
     setProducts(res.data);
   }
 
-  function loadOrders(){
-    const data = JSON.parse(localStorage.getItem("orders")) || [];
-    setOrders(data);
+  async function loadOrders(){
+    const res = await API.get("/api/orders");
+    setOrders(res.data);
+  }
+
+  async function updateOrderStatus(id, status){
+    await API.put(`/api/orders/${id}/status`, status);
+    loadOrders();
   }
 
   function handleImageUpload(e){
