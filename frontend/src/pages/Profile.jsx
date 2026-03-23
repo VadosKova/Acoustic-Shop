@@ -53,7 +53,7 @@ export default function Profile() {
       alert("You need to Sign In");
       return;
     }
-    
+
     if (!window.ethereum) {
       alert("Please install MetaMask!");
       return;
@@ -180,7 +180,7 @@ export default function Profile() {
     reader.readAsDataURL(file);
   }
 
-  function saveProfile(){
+  async function saveProfile(){
     if(!editName.trim() || !editEmail.trim()){
       alert("Fields cannot be empty");
       return;
@@ -198,10 +198,17 @@ export default function Profile() {
       avatarUrl: editAvatar
     };
 
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+    try {
+      await API.put(`/api/auth/${user.id}`, updatedUser); 
 
-    setEditMode(false);
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setEditMode(false);
+      alert("Profile updated!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save profile");
+    }
   }
 
   function handleEditAvatar(e){
