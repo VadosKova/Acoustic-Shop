@@ -96,8 +96,6 @@ export default function ProductDetails() {
         return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user"));
-
     API.post(`/api/products/${id}/review`, {
       name: user.name,
       rating: reviewRating,
