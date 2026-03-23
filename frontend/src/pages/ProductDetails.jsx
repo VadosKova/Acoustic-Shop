@@ -86,6 +86,11 @@ export default function ProductDetails() {
   }
 
   function submitReview() {
+    if (!user) {
+      alert("You need to Sign In");
+      return;
+    }
+
     if (reviewRating === 0) {
         alert("Choose the count of stars");
         return;
@@ -94,14 +99,18 @@ export default function ProductDetails() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     API.post(`/api/products/${id}/review`, {
-      name: user ? user.name : "Anonymous",
+      name: user.name,
       rating: reviewRating,
       comment: reviewText || ""
     }).then(res => {
       setProduct(res.data);
-      setReviews(res.data.reviews);
+      setReviews(res.data.reviews || []);
       setReviewText("");
       setReviewRating(0);
+      alert("Review added!");
+    }).catch(err => {
+      console.error(err);
+      alert("Failed to add review!");
     });
   }
 
