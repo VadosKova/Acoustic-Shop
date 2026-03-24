@@ -9,11 +9,13 @@ export default function OrderDetails() {
 
   const [city, setCity] = useState("");
   const [cities, setCities] = useState([]);
-  const [selectedCityRef, setSelectedCityRef] = useState("");
-  const [status, setStatus] = useState("");
-  const [warehouse, setWarehouse] = useState("");
+  const [cityRef, setCityRef] = useState("");
 
+  const [warehouse, setWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
+
+  const [status, setStatus] = useState("");
+
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("checkout_cart")) || [];
@@ -31,23 +33,35 @@ export default function OrderDetails() {
   const deliveryFee = 0.01;
   const finalTotal = total + deliveryFee;
 
-  async function searchCities(query){
-    const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: "49e22586b343465c346f07a2b3373af5",
-        modelName: "Address",
-        calledMethod: "searchSettlements",
-        methodProperties: {
-          CityName: query,
-          Limit: 5
-        }
-      })
-    });
+  async function handleCitySearch(e) {
+    const query = e.target.value;
+    setCity(query);
 
-    const data = await res.json();
-    return data.data[0].Addresses;
+    if (query.length < 2) {
+      setCities([]);
+      return;
+    }
+
+    try {
+      const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: "49e22586b343465c346f07a2b3373af5",
+          modelName: "Address",
+          calledMethod: "searchSettlements",
+          methodProperties: {
+            CityName: query,
+            Limit: 5
+          }
+        })
+      });
+
+      const data = await res.json();
+      setCities(data.data[0]?.Addresses || []);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async function getWarehouses(cityRef){
