@@ -437,16 +437,14 @@ export default function AdminPanel() {
                 marginBottom: 10
               }}>
                 <p><b>User:</b> {o.userId}</p>
-                <p><b>Date:</b> {new Date(o.createdAt).toLocaleString()}</p>
-                <p><b>Status:</b> {o.status}</p>
+                <p><b>Date:</b> {o.status}</p>
+                <p><b>Total:</b> {o.totalPriceEth} ETH</p>
 
-                <div>
-                  {o.items.map((item,i)=>(
-                    <div key={i}>
-                      {item.name} x {item.quantity}
-                    </div>
-                  ))}
-                </div>
+                {o.items.map((item,i)=>(
+                  <div key={i}>
+                    {item.name} x {item.quantity}
+                  </div>
+                ))}
 
                 <div style={{ marginTop: 10, display: "flex", gap: 10 }}>
                   <button

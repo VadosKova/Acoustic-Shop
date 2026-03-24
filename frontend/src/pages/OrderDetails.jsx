@@ -8,6 +8,9 @@ export default function OrderDetails() {
   const [user, setUser] = useState(null);
 
   const [city, setCity] = useState("");
+  const [cities, setCities] = useState([]);
+  const [selectedCityRef, setSelectedCityRef] = useState("");
+  const [status, setStatus] = useState("");
   const [warehouse, setWarehouse] = useState("");
 
   const [warehouses, setWarehouses] = useState([]);
