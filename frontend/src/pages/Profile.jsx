@@ -419,9 +419,32 @@ export default function Profile() {
         )}
 
         {account && (
-          <div className="wallet-box">
-            <p><b>Wallet:</b> {account}</p>
-            <p><b>Balance:</b> {walletBalance} ETH</p>
+          <div className="wallet-box" style={{
+            marginTop: 10,
+            display: "flex",
+            flexDirection: "column",
+            gap: 6
+          }}>
+            <div><b>Wallet:</b></div>
+            <div style={{
+              fontSize: 12,
+              background: "#fff",
+              padding: "6px 8px",
+              borderRadius: 6,
+              border: "1px solid #eee"
+            }}>
+              {account}
+            </div>
+
+            <div style={{ marginTop: 6 }}>
+              <b>Balance:</b>{" "}
+              <span style={{
+                color: "#42b883",
+                fontWeight: "600"
+              }}>
+                {parseFloat(walletBalance).toFixed(4)} ETH
+              </span>
+            </div>
           </div>
         )}
 
