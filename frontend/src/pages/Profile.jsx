@@ -28,9 +28,11 @@ export default function Profile() {
   const navigate = useNavigate();
 
   const removeFromFavorites = (productId) => {
+    if (!user) return;
+
     setFavorites((prevFavorites) => {
       const updated = prevFavorites.filter(p => p.id !== productId);
-      localStorage.setItem("favorites", JSON.stringify(updated));
+      localStorage.setItem(`favorites_${user.email}`, JSON.stringify(updated));
       return updated;
     });
   };
@@ -174,12 +176,11 @@ export default function Profile() {
     const allowedTypes = [
       "image/png",
       "image/jpeg",
-      "image/jpg",
-      "image/webp"
+      "image/jpg"
     ];
 
     if(!allowedTypes.includes(file.type)){
-      alert("Please upload a valid image (PNG, JPG, JPEG, WEBP)");
+      alert("Please upload a valid image (PNG, JPG, JPEG)");
       return;
     }
 
@@ -245,6 +246,8 @@ export default function Profile() {
   }
 
   useEffect(()=>{
+    if (!user) return;
+
     const fav = JSON.parse(localStorage.getItem(`favorites_${user.email}`)) || [];
     setFavorites(fav);
 

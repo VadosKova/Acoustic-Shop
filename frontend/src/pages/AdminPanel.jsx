@@ -69,10 +69,10 @@ export default function AdminPanel() {
     const file = e.target.files[0];
     if(!file) return;
 
-    const allowedTypes = ["image/png","image/jpeg","image/jpg","image/webp"];
+    const allowedTypes = ["image/png","image/jpeg","image/jpg"];
 
     if(!allowedTypes.includes(file.type)){
-      alert("Invalid image format (PNG, JPG, JPEG, WEBP)");
+      alert("Invalid image format (PNG, JPG, JPEG)");
       return;
     }
 
