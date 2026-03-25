@@ -90,35 +90,62 @@ export default function OrderDetails() {
     }
   }
 
-  useEffect(() => {
-    if(city){
-      setWarehouses([
-        "Відділення №1",
-        "Відділення №2",
-        "Відділення №3"
-      ]);
-    }
-  }, [city]);
-
   async function submitOrder(){
-    const order = {
-      userId: user.email,
-      items: cart.map(p => ({
-        productId: p.id,
-        name: p.name,
-        priceEth: p.priceEth,
-        quantity: p.quantity,
-        imageUrl: p.imageUrl
-      })),
-      totalPriceEth: finalTotal
-    };
+    if (!user) {
+      alert("Login first");
+      return;
+    }
 
-    await API.post("/api/orders", order);
+    if (!cityRef || !warehouse) {
+      alert("Fill delivery info");
+      return;
+    }
 
-    localStorage.removeItem("cart");
-    localStorage.removeItem("checkout_cart");
+    if (!window.ethereum) {
+      alert("Install MetaMask");
+      return;
+    }
 
-    alert("Замовлення оформлено");
+    try {
+      setStatus("Waiting for payment...");
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const tx = await signer.sendTransaction({
+        to: import.meta.env.VITE_CONTRACT_ADDRESS,
+        value: ethers.parseEther(finalTotal.toString())
+      });
+
+      await tx.wait();
+
+      setStatus("Payment successful");
+
+      const order = {
+        userId: user.email,
+        items: cart.map(p => ({
+          productId: p.id,
+          name: p.name,
+          priceEth: p.priceEth,
+          quantity: p.quantity,
+          imageUrl: p.imageUrl
+        })),
+        totalPriceEth: finalTotal,
+        status: "Processing",
+        city,
+        warehouse
+      };
+
+      await API.post("/api/orders", order);
+
+      localStorage.removeItem("cart");
+      localStorage.removeItem("checkout_cart");
+
+      alert("Order created successfully!");
+    } catch (err) {
+      console.error(err);
+      setStatus("Payment failed");
+    }
   }
 
   return (
