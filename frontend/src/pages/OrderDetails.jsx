@@ -13,6 +13,7 @@ export default function OrderDetails() {
 
   const [warehouse, setWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
+  const [showWarehouses, setShowWarehouses] = useState(false);
 
   const [status, setStatus] = useState("");
 
@@ -149,10 +150,10 @@ export default function OrderDetails() {
   }
 
   return (
-    <div style={{ padding: 30 }}>
+    <div style={{ maxWidth: 1000, margin: "40px auto", padding: 20 }}>
       <Navbar />
 
-      <h2>Order Details</h2>
+      <h2 style={{ marginBottom: 20 }}>Order Details</h2>
 
       <div>
         <p><b>Name:</b> {user?.name}</p>
@@ -190,10 +191,14 @@ export default function OrderDetails() {
           <input
             placeholder="Select warehouse"
             value={warehouse}
-            onChange={(e)=>setWarehouse(e.target.value)}
+            onFocus={() => setShowWarehouses(true)}
+            onChange={(e) => {
+              setWarehouse(e.target.value);
+              setShowWarehouses(true);
+            }}
           />
 
-          {warehouses.length > 0 && (
+          {showWarehouses && warehouses.length > 0 && (
             <div style={{
               border: "1px solid #ccc",
               marginTop: 5,
@@ -205,7 +210,10 @@ export default function OrderDetails() {
                 <div
                   key={i}
                   style={{ padding: 8, cursor: "pointer" }}
-                  onClick={() => setWarehouse(w.Description)}
+                  onClick={() => {
+                    setWarehouse(w.Description);
+                    setShowWarehouses(false);
+                  }}
                 >
                   {w.Description}
                 </div>
