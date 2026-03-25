@@ -8,17 +8,24 @@ namespace WebApplication2.Controllers
     [Route("api/products")]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAll()
+        private readonly ProductMongoService _service;
+
+        public ProductsController(ProductMongoService service)
         {
-            return Ok(ProductService.Products);
+            _service = service;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _service.GetAllAsync();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
-            var product = ProductService.Products
-                .FirstOrDefault(p => p.Id == id);
+            var product = await _service.GetByIdAsync(id);
 
             if (product == null)
                 return NotFound();
@@ -27,40 +34,60 @@ namespace WebApplication2.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Product product)
+        public async Task<IActionResult> Create(Product product)
         {
-            product.Id = ProductService.Products.Count + 1;
-            ProductService.Products.Add(product);
+            await _service.CreateAsync(product);
             return Ok(product);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Product updated)
+        public async Task<IActionResult> Update(string id, Product updated)
         {
-            var product = ProductService.Products.FirstOrDefault(x => x.Id == id);
+            var existing = await _service.GetByIdAsync(id);
 
-            if (product == null)
+            if (existing == null)
                 return NotFound();
 
-            product.Name = updated.Name;
-            product.PriceEth = updated.PriceEth;
-            product.ImageUrl = updated.ImageUrl;
-            product.Category = updated.Category;
+            updated.Id = existing.Id;
 
-            return Ok(product);
+            await _service.UpdateAsync(id, updated);
+
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var product = ProductService.Products.FirstOrDefault(x => x.Id == id);
+            var existing = await _service.GetByIdAsync(id);
+
+            if (existing == null)
+                return NotFound();
+
+            await _service.DeleteAsync(id);
+
+            return Ok();
+        }
+
+        [HttpPost("{id}/review")]
+        public async Task<IActionResult> AddReview(string id, [FromBody] Review review)
+        {
+            var updatedProduct = await _service.AddReviewAsync(id, review);
+
+            if (updatedProduct == null)
+                return NotFound();
+
+            return Ok(updatedProduct);
+        }
+
+        [HttpGet("{id}/reviews")]
+        public async Task<IActionResult> GetReviews(string id)
+        {
+            var product = await _service.GetByIdAsync(id);
 
             if (product == null)
                 return NotFound();
 
-            ProductService.Products.Remove(product);
-
-            return Ok();
+            return Ok(product.Reviews);
         }
     }
 }
