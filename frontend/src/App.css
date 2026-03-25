@@ -460,6 +460,7 @@ button:disabled{
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
   background: #ff4d4d;
   border: none;
   color: white;

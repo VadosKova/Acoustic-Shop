@@ -19,7 +19,7 @@ export default function OrderDetails() {
 
 
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("checkout_cart")) || [];
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const u = JSON.parse(localStorage.getItem("user"));
 
     setCart(savedCart);
@@ -39,6 +39,10 @@ export default function OrderDetails() {
     "Payment successful": "#42b883",
     "Payment failed": "#ff4d4d"
   };
+
+  const filteredWarehouses = warehouses.filter(w =>
+    w.Description.toLowerCase().includes(warehouse.toLowerCase())
+  );
 
   async function handleCitySearch(e) {
     const query = e.target.value;
@@ -75,6 +79,7 @@ export default function OrderDetails() {
     setCity(cityObj.Present);
     setCityRef(cityObj.Ref);
     setCities([]);
+    setWarehouse("");
 
     try {
       const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
@@ -141,7 +146,6 @@ export default function OrderDetails() {
       await API.post("/api/orders", order);
 
       localStorage.removeItem("cart");
-      localStorage.removeItem("checkout_cart");
 
       alert("Order created successfully!");
     } catch (err) {
@@ -199,7 +203,13 @@ export default function OrderDetails() {
             <input
               placeholder="Warehouse"
               value={warehouse}
-              onFocus={() => setShowWarehouses(true)}
+              onFocus={() => {
+                if (!cityRef) {
+                  alert("Select city first");
+                  return;
+                }
+                setShowWarehouses(true);
+              }}
               onChange={(e) => {
                 setWarehouse(e.target.value);
                 setShowWarehouses(true);
@@ -207,9 +217,9 @@ export default function OrderDetails() {
               style={inputStyle}
             />
 
-            {showWarehouses && warehouses.length > 0 && (
+            {showWarehouses && filteredWarehouses.length > 0 && (
               <div style={dropdownStyle}>
-                {warehouses.slice(0, 15).map((w, i) => (
+                {filteredWarehouses.slice(0, 15).map((w, i) => (
                   <div
                     key={i}
                     style={dropdownItem}
@@ -255,8 +265,8 @@ export default function OrderDetails() {
 
           <hr />
 
-          <p>Products: {total.toFixed(4)} ETH</p>
-          <p>Delivery: {deliveryFee} ETH</p>
+          <p><b>Products:</b> {total.toFixed(4)} ETH</p>
+          <p><b>Delivery:</b> {deliveryFee} ETH</p>
 
           <h3 style={{ marginTop: 10 }}>
             Total: {finalTotal.toFixed(4)} ETH
@@ -323,7 +333,7 @@ const itemStyle = {
 const imgStyle = {
   width: 60,
   height: 60,
-  objectFit: "cover",
+  objectFit: "contain",
   borderRadius: 6
 };
 

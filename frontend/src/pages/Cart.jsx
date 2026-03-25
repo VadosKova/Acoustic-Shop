@@ -96,6 +96,11 @@ export default function Cart() {
 
                 <button onClick={()=>updateQuantity(index,1)}>+</button>
               </div>
+              {cart.length > 0 && (
+                <h3 style={{ marginTop: 20 }}>
+                  Total: {totalPrice.toFixed(4)} ETH
+                </h3>
+              )}
             </div>
 
             <div className="cart-actions">
@@ -111,11 +116,6 @@ export default function Cart() {
                 </button>
               )}
             </div>
-            {cart.length > 0 && (
-              <h3 style={{ marginTop: 20 }}>
-                Total: {totalPrice.toFixed(4)} ETH
-              </h3>
-            )}
           </div>
         ))}
       </div>
