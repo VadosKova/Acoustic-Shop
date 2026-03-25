@@ -165,8 +165,26 @@ export default function OrderDetails() {
         <input
           placeholder="City"
           value={city}
-          onChange={(e)=>setCity(e.target.value)}
+          onChange={handleCitySearch}
         />
+
+        {cities.length > 0 && (
+          <div style={{
+            border: "1px solid #ccc",
+            marginTop: 5,
+            borderRadius: 6
+          }}>
+            {cities.map((c, i) => (
+              <div
+                key={i}
+                style={{ padding: 8, cursor: "pointer" }}
+                onClick={() => selectCity(c)}
+              >
+                {c.Present}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div style={{ marginTop: 10 }}>
           <input
@@ -175,19 +193,21 @@ export default function OrderDetails() {
             onChange={(e)=>setWarehouse(e.target.value)}
           />
 
-          {warehouse && (
+          {warehouses.length > 0 && (
             <div style={{
               border: "1px solid #ccc",
-              padding: 10,
-              marginTop: 5
+              marginTop: 5,
+              borderRadius: 6,
+              maxHeight: 200,
+              overflowY: "auto"
             }}>
-              {warehouses.map((w,i)=>(
+              {warehouses.slice(0, 10).map((w, i) => (
                 <div
                   key={i}
-                  style={{ cursor: "pointer" }}
-                  onClick={()=>setWarehouse(w)}
+                  style={{ padding: 8, cursor: "pointer" }}
+                  onClick={() => setWarehouse(w.Description)}
                 >
-                  {w}
+                  {w.Description}
                 </div>
               ))}
             </div>
@@ -212,6 +232,10 @@ export default function OrderDetails() {
         <h3>Total: {finalTotal.toFixed(4)} ETH</h3>
       </div>
 
+      {status && (
+        <p style={{ marginTop: 10 }}>{status}</p>
+      )}
+
       <button
         onClick={submitOrder}
         style={{
@@ -220,10 +244,11 @@ export default function OrderDetails() {
           background: "#42b883",
           color: "#fff",
           border: "none",
-          borderRadius: 8
+          borderRadius: 8,
+          cursor: "pointer"
         }}
       >
-        Confirm Order
+        Pay & Confirm Order
       </button>
     </div>
   );
