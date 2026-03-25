@@ -151,107 +151,197 @@ export default function OrderDetails() {
   }
 
   return (
-    <div style={{ maxWidth: 1100, margin: "40px auto", padding: 20 }}>
+    <div style={{ maxWidth: 1000, margin: "40px auto", padding: 20 }}>
       <Navbar />
 
       <h2 style={{ marginBottom: 20 }}>Order Details</h2>
 
-      <div style={{ background: "#fff", padding: 20, borderRadius: 10, marginBottom: 20 }}>
-        <h3>User Info</h3>
-        <p><b>Name:</b> {user?.name}</p>
-        <p><b>Email:</b> {user?.email}</p>
-      </div>
-
-      <div style={{ background: "#fff", padding: 20, borderRadius: 10, marginBottom: 20 }}>
-        <h3>Delivery</h3>
-
-        <input
-          placeholder="City"
-          value={city}
-          onChange={handleCitySearch}
-        />
-
-        {cities.length > 0 && (
-          <div className="dropdown">
-            {cities.map((c, i) => (
-              <div key={i} onClick={() => selectCity(c)}>
-                {c.Present}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <input
-          placeholder="Select warehouse"
-          value={warehouse}
-          onFocus={() => setShowWarehouses(true)}
-          onChange={(e) => setWarehouse(e.target.value)}
-        />
-
-        {showWarehouses && warehouses.length > 0 && (
-          <div className="dropdown">
-            {warehouses.slice(0, 10).map((w, i) => (
-              <div key={i}
-                onClick={() => {
-                  setWarehouse(w.Description);
-                  setShowWarehouses(false);
-                }}>
-                {w.Description}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div style={{ background: "#fff", padding: 20, borderRadius: 10}}>
-        <h3>Items</h3>
-
-        {cart.map((item,i)=>(
-          <div key={i} style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 15,
-            marginBottom: 10
-          }}>
-            <img src={item.imageUrl} width={60} />
-            <div>
-              <b>{item.name}</b>
-              <p>{item.quantity} x {item.priceEth} ETH</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ marginTop: 20 }}>
-        <p>Products: {total.toFixed(4)} ETH</p>
-        <p>Delivery: {deliveryFee} ETH</p>
-        <h3>Total: {finalTotal.toFixed(4)} ETH</h3>
-      </div>
-
-      {status && (
-        <p style={{
-          marginTop: 10,
-          color: statusColor[status] || "#000",
-          fontWeight: "bold"
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 400px",
+        gap: 30
+      }}>
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 20
         }}>
-          {status}
-        </p>
-      )}
+          <div style={cardStyle}>
+            <h3>User Info</h3>
+            <p><b>Name:</b> {user?.name}</p>
+            <p><b>Email:</b> {user?.email}</p>
+          </div>
 
-      <button
-        onClick={submitOrder}
-        style={{
-          marginTop: 20,
-          padding: "10px 16px",
-          background: "#42b883",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          cursor: "pointer"
-        }}
-      >
-        Pay & Confirm Order
-      </button>
+          <div style={cardStyle}>
+            <h3>Delivery Info</h3>
+
+            <input
+              placeholder="City"
+              value={city}
+              onChange={handleCitySearch}
+              style={inputStyle}
+            />
+
+            {cities.length > 0 && (
+              <div style={dropdownStyle}>
+                {cities.map((c, i) => (
+                  <div
+                    key={i}
+                    style={dropdownItem}
+                    onClick={() => selectCity(c)}
+                  >
+                    {c.Present}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <input
+              placeholder="Warehouse"
+              value={warehouse}
+              onFocus={() => setShowWarehouses(true)}
+              onChange={(e) => {
+                setWarehouse(e.target.value);
+                setShowWarehouses(true);
+              }}
+              style={inputStyle}
+            />
+
+            {showWarehouses && warehouses.length > 0 && (
+              <div style={dropdownStyle}>
+                {warehouses.slice(0, 15).map((w, i) => (
+                  <div
+                    key={i}
+                    style={dropdownItem}
+                    onClick={() => {
+                      setWarehouse(w.Description);
+                      setShowWarehouses(false);
+                    }}
+                  >
+                    {w.Description}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div style={cardStyle}>
+            <h3>Items</h3>
+
+            {cart.map((item, i) => (
+              <div key={i} style={itemStyle}>
+                <img src={item.imageUrl} style={imgStyle} />
+                <div>
+                  <b>{item.name}</b>
+                  <p>{item.quantity} x {item.priceEth} ETH</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+
+        <div style={cardStyle}>
+          <h3>Order Summary</h3>
+
+          {cart.map((item, i) => (
+            <div key={i} style={summaryRow}>
+              <span>{item.name} x {item.quantity}</span>
+              <span>
+                {(item.priceEth * item.quantity).toFixed(4)} ETH
+              </span>
+            </div>
+          ))}
+
+          <hr />
+
+          <p>Products: {total.toFixed(4)} ETH</p>
+          <p>Delivery: {deliveryFee} ETH</p>
+
+          <h3 style={{ marginTop: 10 }}>
+            Total: {finalTotal.toFixed(4)} ETH
+          </h3>
+
+          {status && (
+            <p style={{
+              marginTop: 10,
+              color: statusColor[status],
+              fontWeight: "bold"
+            }}>
+              {status}
+            </p>
+          )}
+
+          <button onClick={submitOrder} style={buttonStyle}>
+            Pay & Confirm
+          </button>
+        </div>
+
+      </div>
     </div>
   );
 }
+
+const cardStyle = {
+  background: "#fff",
+  padding: 20,
+  borderRadius: 12,
+  boxShadow: "0 8px 20px rgba(0,0,0,0.08)"
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px",
+  marginTop: 10,
+  borderRadius: 8,
+  border: "1px solid #ddd"
+};
+
+const dropdownStyle = {
+  border: "1px solid #ddd",
+  borderRadius: 8,
+  marginTop: 5,
+  maxHeight: 200,
+  overflowY: "auto",
+  background: "#fff",
+  boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+};
+
+const dropdownItem = {
+  padding: 10,
+  cursor: "pointer",
+  borderBottom: "1px solid #f0f0f0"
+};
+
+const itemStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: 15,
+  marginBottom: 10
+};
+
+const imgStyle = {
+  width: 60,
+  height: 60,
+  objectFit: "cover",
+  borderRadius: 6
+};
+
+const summaryRow = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginBottom: 10
+};
+
+const buttonStyle = {
+  marginTop: 20,
+  width: "100%",
+  padding: "14px",
+  background: "#42b883",
+  color: "#fff",
+  border: "none",
+  borderRadius: 10,
+  fontWeight: "600",
+  cursor: "pointer",
+  fontSize: 16
+};
