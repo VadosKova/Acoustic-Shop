@@ -92,6 +92,7 @@ export default function OrderDetails() {
 
       const data = await res.json();
       setWarehouses(data.data || []);
+      setShowWarehouses(true);
     } catch (err) {
       console.error(err);
     }
@@ -130,13 +131,7 @@ export default function OrderDetails() {
 
       const order = {
         userId: user.email,
-        items: cart.map(p => ({
-          productId: p.id,
-          name: p.name,
-          priceEth: p.priceEth,
-          quantity: p.quantity,
-          imageUrl: p.imageUrl
-        })),
+        items: cart,
         totalPriceEth: finalTotal,
         status: "Processing",
         city,
@@ -156,17 +151,18 @@ export default function OrderDetails() {
   }
 
   return (
-    <div style={{ maxWidth: 1000, margin: "40px auto", padding: 20 }}>
+    <div style={{ maxWidth: 1100, margin: "40px auto", padding: 20 }}>
       <Navbar />
 
       <h2 style={{ marginBottom: 20 }}>Order Details</h2>
 
-      <div>
+      <div style={{ background: "#fff", padding: 20, borderRadius: 10, marginBottom: 20 }}>
+        <h3>User Info</h3>
         <p><b>Name:</b> {user?.name}</p>
         <p><b>Email:</b> {user?.email}</p>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div style={{ background: "#fff", padding: 20, borderRadius: 10, marginBottom: 20 }}>
         <h3>Delivery</h3>
 
         <input
@@ -176,66 +172,52 @@ export default function OrderDetails() {
         />
 
         {cities.length > 0 && (
-          <div style={{
-            border: "1px solid #ccc",
-            marginTop: 5,
-            borderRadius: 6
-          }}>
+          <div className="dropdown">
             {cities.map((c, i) => (
-              <div
-                key={i}
-                style={{ padding: 8, cursor: "pointer" }}
-                onClick={() => selectCity(c)}
-              >
+              <div key={i} onClick={() => selectCity(c)}>
                 {c.Present}
               </div>
             ))}
           </div>
         )}
 
-        <div style={{ marginTop: 10 }}>
-          <input
-            placeholder="Select warehouse"
-            value={warehouse}
-            onFocus={() => setShowWarehouses(true)}
-            onChange={(e) => {
-              setWarehouse(e.target.value);
-              setShowWarehouses(true);
-            }}
-          />
+        <input
+          placeholder="Select warehouse"
+          value={warehouse}
+          onFocus={() => setShowWarehouses(true)}
+          onChange={(e) => setWarehouse(e.target.value)}
+        />
 
-          {showWarehouses && warehouses.length > 0 && (
-            <div style={{
-              border: "1px solid #ccc",
-              marginTop: 5,
-              borderRadius: 6,
-              maxHeight: 200,
-              overflowY: "auto"
-            }}>
-              {warehouses.slice(0, 10).map((w, i) => (
-                <div
-                  key={i}
-                  style={{ padding: 8, cursor: "pointer" }}
-                  onClick={() => {
-                    setWarehouse(w.Description);
-                    setShowWarehouses(false);
-                  }}
-                >
-                  {w.Description}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {showWarehouses && warehouses.length > 0 && (
+          <div className="dropdown">
+            {warehouses.slice(0, 10).map((w, i) => (
+              <div key={i}
+                onClick={() => {
+                  setWarehouse(w.Description);
+                  setShowWarehouses(false);
+                }}>
+                {w.Description}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div style={{ marginTop: 30 }}>
+      <div style={{ background: "#fff", padding: 20, borderRadius: 10}}>
         <h3>Items</h3>
 
         {cart.map((item,i)=>(
-          <div key={i}>
-            {item.name} x {item.quantity} —{" "}
-            {(item.priceEth * item.quantity).toFixed(4)} ETH
+          <div key={i} style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 15,
+            marginBottom: 10
+          }}>
+            <img src={item.imageUrl} width={60} />
+            <div>
+              <b>{item.name}</b>
+              <p>{item.quantity} x {item.priceEth} ETH</p>
+            </div>
           </div>
         ))}
       </div>
@@ -247,7 +229,13 @@ export default function OrderDetails() {
       </div>
 
       {status && (
-        <p style={{ marginTop: 10 }}>{status}</p>
+        <p style={{
+          marginTop: 10,
+          color: statusColor[status] || "#000",
+          fontWeight: "bold"
+        }}>
+          {status}
+        </p>
       )}
 
       <button
