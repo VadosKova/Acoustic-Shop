@@ -11,7 +11,14 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      setFav(false);
+      return;
+    }
+
+    const saved = JSON.parse(localStorage.getItem(`favorites_${user.email}`)) || [];
     const exists = saved.find(p => p.id === product.id);
     setFav(!!exists);
   }, [product]);
@@ -32,18 +39,19 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       return;
     }
 
-    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
+    const key = `favorites_${user.email}`;
+    const saved = JSON.parse(localStorage.getItem(key)) || [];
 
     if (fav) {
       const updated = saved.filter(p => p.id !== product.id);
-      localStorage.setItem("favorites", JSON.stringify(updated));
+      localStorage.setItem(key, JSON.stringify(updated));
       setFav(false);
 
       if (onFavoriteToggle) {
         onFavoriteToggle(product.id);
       }
     } else {
-      localStorage.setItem("favorites", JSON.stringify([...saved, product]));
+      localStorage.setItem(key, JSON.stringify([...saved, product]));
       setFav(true);
     }
   }

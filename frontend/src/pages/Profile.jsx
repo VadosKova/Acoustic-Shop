@@ -245,7 +245,7 @@ export default function Profile() {
   }
 
   useEffect(()=>{
-    const fav = JSON.parse(localStorage.getItem("favorites")) || [];
+    const fav = JSON.parse(localStorage.getItem(`favorites_${user.email}`)) || [];
     setFavorites(fav);
 
     const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
