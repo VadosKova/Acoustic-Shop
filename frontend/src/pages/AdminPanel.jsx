@@ -61,7 +61,9 @@ export default function AdminPanel() {
   }
 
   async function updateOrderStatus(id, status){
-    await API.put(`/api/orders/${id}/status`, status);
+    await API.put(`/api/orders/${id}`, JSON.stringify(status), {
+      headers: { "Content-Type": "application/json" }
+    });
     loadOrders();
   }
 
@@ -437,8 +439,12 @@ export default function AdminPanel() {
                 marginBottom: 10
               }}>
                 <p><b>User:</b> {o.userId}</p>
+                <p><b>Name:</b> {o.name}</p>
+                <p><b>City:</b> {o.city}</p>
+                <p><b>Warehouse:</b> {o.warehouse}</p>
                 <p><b>Date:</b> {o.status}</p>
                 <p><b>Total:</b> {o.totalPriceEth} ETH</p>
+                <p><b>Status:</b> {o.status}</p>
 
                 {o.items.map((item,i)=>(
                   <div key={i}>
