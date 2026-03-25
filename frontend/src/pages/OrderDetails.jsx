@@ -34,6 +34,12 @@ export default function OrderDetails() {
   const deliveryFee = 0.01;
   const finalTotal = total + deliveryFee;
 
+  const statusColor = {
+    "Waiting for payment...": "#f5a623",
+    "Payment successful": "#42b883",
+    "Payment failed": "#ff4d4d"
+  };
+
   async function handleCitySearch(e) {
     const query = e.target.value;
     setCity(query);
