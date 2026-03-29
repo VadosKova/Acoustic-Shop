@@ -319,7 +319,7 @@ export default function AdminPanel() {
         </div>
 
         <h3>All Products</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20, maxHeight: 400, overflowY: "auto", paddingRight: 10 }}>
           {products.map((p, index) => (
             <div key={p.id} className="cart-item">
               <img src={p.imageUrl} />
