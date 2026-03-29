@@ -487,7 +487,24 @@ export default function Profile() {
           <p>No orders</p>
         ) : (
           orders.map((o,i)=>(
-            <div key={i} className="order-item">
+            <div key={i} className="order-item" style={{ position: "relative" }}>
+              <div style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                padding: "4px 8px",
+                borderRadius: 6,
+                fontSize: 12,
+                color: "#fff",
+                background:
+                  o.status === "Accepted"
+                    ? "green"
+                    : o.status === "Rejected"
+                    ? "red"
+                    : "#f5a623"
+              }}>
+                {o.status}
+              </div>
               <p><b>Дата:</b> {new Date(o.date).toLocaleString()}</p>
 
               {o.items.map((item,idx)=>(
