@@ -7,6 +7,18 @@ import Profile from "./pages/Profile";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import './App.css'
 
+
+const UserRoute = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user?.email === "admin@gmail.com";
+
+  if (isAdmin) {
+    return <Navigate to="/admin-panel" replace />;
+  }
+
+  return children;
+};
+
 const AdminRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user?.email === "admin@gmail.com";
@@ -23,8 +35,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Shop />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/" element={<UserRoute><Shop /></UserRoute>} />
+        <Route path="/product/:id" element={<UserRoute><ProductDetails /></UserRoute>} />
         <Route 
           path="/admin-panel" 
           element={
@@ -33,9 +45,9 @@ function App() {
             </AdminRoute>
           } 
         />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/order-details" element={<OrderDetails />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/cart" element={<UserRoute><Cart /></UserRoute>} />
+        <Route path="/order-details" element={<UserRoute><OrderDetails /></UserRoute>} />
+        <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
