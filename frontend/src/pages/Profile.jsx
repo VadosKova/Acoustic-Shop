@@ -262,9 +262,10 @@ export default function Profile() {
 
         const productsRes = await API.get("/api/products");
 
-        const favProducts = productsRes.data.filter(p =>
-          favIds.includes(p.id)
-        );
+        const favProducts = productsRes.data.filter(p => {
+          const productId = p.id || p._id;
+          return favIds.includes(productId);
+        });
 
         setFavorites(favProducts);
       } catch (err) {

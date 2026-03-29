@@ -19,8 +19,9 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       return;
     }
 
-    const saved = JSON.parse(localStorage.getItem(`favorites_${user.email}`)) || [];
-    const exists = saved.find(p => p.id === product.id);
+    const productId = product.id || product._id;
+
+    const exists = user.favoriteProductIds?.includes(productId);
     setFav(!!exists);
   }, [product]);
 
@@ -40,14 +41,16 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       return;
     }
 
+    const productId = product.id || product._id;
+
     try {
       if (fav) {
-        await API.delete(`/api/auth/favorite/${user.id}/${product.id}`);
+        await API.delete(`/api/auth/favorite/${user.id}/${productId}`);
         setFav(false);
 
-        user.favoriteProductIds = user.favoriteProductIds.filter(id => id !== product.id);
+        user.favoriteProductIds = user.favoriteProductIds.filter(id => id !== productId);
       } else {
-        const res = await API.post(`/api/auth/favorite/${user.id}/${product.id}`);
+        const res = await API.post(`/api/auth/favorite/${user.id}/${productId}`);
         setFav(true);
 
         user.favoriteProductIds = res.data.favoriteProductIds;
@@ -56,7 +59,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       localStorage.setItem("user", JSON.stringify(user));
 
       if (onFavoriteToggle) {
-        onFavoriteToggle(product.id);
+        onFavoriteToggle(product.id || product._id);
       }
 
     } catch (err) {
