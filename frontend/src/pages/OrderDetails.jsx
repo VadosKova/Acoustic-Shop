@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { API } from "../../api/api";
 import { ethers } from "ethers";
 
 export default function OrderDetails() {
+  const navigate = useNavigate();
+  
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
 
@@ -149,7 +152,13 @@ export default function OrderDetails() {
 
       const order = {
         userId: user.email,
-        items: cart,
+        items: cart.map(item => ({
+          productId: item.id || item._id,
+          name: item.name,
+          priceEth: item.priceEth,
+          quantity: item.quantity,
+          imageUrl: item.imageUrl
+        })),
         totalPriceEth: finalTotal,
         status: "Processing",
         city,
@@ -159,7 +168,7 @@ export default function OrderDetails() {
       await API.post("/api/orders", order);
 
       localStorage.removeItem("cart");
-
+      navigate("/profile");
       alert("Order created successfully!");
     } catch (err) {
       console.error(err);
