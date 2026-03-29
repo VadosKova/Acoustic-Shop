@@ -436,7 +436,13 @@ export default function AdminPanel() {
               <div key={o.id} style={{
                 border: "1px solid #ddd",
                 padding: 10,
-                marginBottom: 10
+                marginBottom: 10,
+                background: (o.status === "Accepted" || o.status === "Rejected")
+                  ? "#eee"
+                  : "#fff",
+                opacity: (o.status === "Accepted" || o.status === "Rejected")
+                  ? 0.6
+                  : 1
               }}>
                 <p><b>User:</b> {o.userId}</p>
                 <p><b>Name:</b> {o.name}</p>
@@ -452,21 +458,23 @@ export default function AdminPanel() {
                   </div>
                 ))}
 
-                <div style={{ marginTop: 10, display: "flex", gap: 10 }}>
-                  <button
-                    style={{ background: "green", color: "#fff" }}
-                    onClick={() => updateOrderStatus(o.id, "Accepted")}
-                  >
-                    Accept
-                  </button>
+                {o.status !== "Accepted" && o.status !== "Rejected" && (
+                  <div style={{ marginTop: 10, display: "flex", gap: 10 }}>
+                    <button
+                      style={{ background: "green", color: "#fff" }}
+                      onClick={() => updateOrderStatus(o.id, "Accepted")}
+                    >
+                      Accept
+                    </button>
 
-                  <button
-                    style={{ background: "red", color: "#fff" }}
-                    onClick={() => updateOrderStatus(o.id, "Rejected")}
-                  >
-                    Reject
-                  </button>
-                </div>
+                    <button
+                      style={{ background: "red", color: "#fff" }}
+                      onClick={() => updateOrderStatus(o.id, "Rejected")}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
