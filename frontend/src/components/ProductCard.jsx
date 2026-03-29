@@ -11,7 +11,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     if (!user) {
       setFav(false);
@@ -59,7 +59,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
   function addToCart(e) {
     e.stopPropagation();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     const isAdmin = user?.email === "admin@gmail.com";
 
     if(!user){

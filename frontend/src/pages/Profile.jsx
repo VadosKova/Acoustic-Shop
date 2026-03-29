@@ -38,7 +38,7 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
+    const savedUser = sessionStorage.getItem("user");
 
     if (savedUser) {
       const u = JSON.parse(savedUser);
@@ -57,7 +57,7 @@ export default function Profile() {
   }, [account]);
 
   async function connectWallet() {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     if(!user){
       alert("You need to Sign In");
