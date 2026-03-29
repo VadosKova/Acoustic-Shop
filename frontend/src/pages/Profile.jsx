@@ -535,35 +535,59 @@ export default function Profile() {
           {orders.length === 0 ? (
             <p>No orders</p>
           ) : (
-            orders.map((o,i)=>(
-              <div key={i} className="order-item" style={{ position: "relative" }}>
-                <div style={{
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  padding: "4px 8px",
-                  borderRadius: 6,
-                  fontSize: 12,
-                  color: "#fff",
-                  background:
-                    o.status === "Accepted"
-                      ? "green"
-                      : o.status === "Rejected"
-                      ? "red"
-                      : "#f5a623"
-                }}>
-                  {o.status}
-                </div>
-                <p><b>Дата:</b> {new Date(o.date).toLocaleString()}</p>
-
-                {o.items.map((item,idx)=>(
-                  <div key={idx}>
-                    {item.name} x {item.quantity}
+            <div className="orders-list" style={{ display: "flex", flexDirection: "column", gap: 20, width: "100%", maxWidth: 800, marginTop: 20 }}>
+              {orders.map((o,i)=>(
+                <div key={i} className="order-item" style={{ position: "relative", border: "1px solid #eee", borderRadius: 12, padding: "20px", background: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+                  <div style={{
+                    position: "absolute",
+                    top: 15,
+                    right: 15,
+                    padding: "5px 12px",
+                    borderRadius: 20,
+                    fontSize: 12,
+                    fontWeight: "bold",
+                    color: "#fff",
+                    background:
+                      o.status === "Accepted"
+                        ? "green"
+                        : o.status === "Rejected"
+                        ? "red"
+                        : "#f5a623"
+                  }}>
+                    {o.status}
                   </div>
-                ))}
-              </div>
-            ))
-          )}
+                  <p style={{ marginBottom: 15, fontSize: 14, color: "#666" }}>
+                    <b>Дата:</b> {o.date ? new Date(o.date).toLocaleString() : "Не вказана"}
+                  </p>
+                  
+                  <div className="order-products" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {o.items.map((item,idx)=>(
+                      <div key={idx} style={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        gap: 15, 
+                        padding: "10px 0",
+                        borderTop: "1px solid #f9f9f9" 
+                      }}>
+                        <img 
+                          src={item.ImageUrl || item.imageUrl || "https://via.placeholder.com/50"} 
+                          alt={item.name} 
+                          style={{ width: 60, height: 60, objectFit: "contain", borderRadius: 6, border: "1px solid #eee" }}
+                        />
+                        <div style={{ flexGrow: 1 }}>
+                          <div style={{ fontWeight: "600", fontSize: 15 }}>{item.name}</div>
+                          <div style={{ fontSize: 13, color: "#888" }}>Кількість: {item.quantity} шт.</div>
+                        </div>
+                        <div style={{ fontWeight: "bold", color: "#333" }}>
+                          {item.priceEth || item.PriceEth} ETH
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }</div>
+            )}
         </div>
       )}
     </div>
