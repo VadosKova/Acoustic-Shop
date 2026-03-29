@@ -35,8 +35,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<UserRoute><Shop /></UserRoute>} />
-        <Route path="/product/:id" element={<UserRoute><ProductDetails /></UserRoute>} />
+        <Route path="/" element={<Shop />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
         <Route 
           path="/admin-panel" 
           element={
@@ -47,7 +47,7 @@ function App() {
         />
         <Route path="/cart" element={<UserRoute><Cart /></UserRoute>} />
         <Route path="/order-details" element={<UserRoute><OrderDetails /></UserRoute>} />
-        <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

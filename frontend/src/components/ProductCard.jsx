@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { API } from "../../api/api";
 
 import HeartIcon from "../assets/icons/HeartIcon";
 import ReviewIcon from "../assets/icons/ReviewIcon";
@@ -23,7 +24,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
     setFav(!!exists);
   }, [product]);
 
-  function toggleFavorite(e) {
+  async function toggleFavorite(e) {
     e.stopPropagation();
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -39,20 +40,28 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       return;
     }
 
-    const key = `favorites_${user.email}`;
-    const saved = JSON.parse(localStorage.getItem(key)) || [];
+    try {
+      if (fav) {
+        await API.delete(`/api/auth/favorite/${user.id}/${product.id}`);
+        setFav(false);
 
-    if (fav) {
-      const updated = saved.filter(p => p.id !== product.id);
-      localStorage.setItem(key, JSON.stringify(updated));
-      setFav(false);
+        user.favoriteProductIds = user.favoriteProductIds.filter(id => id !== product.id);
+      } else {
+        const res = await API.post(`/api/auth/favorite/${user.id}/${product.id}`);
+        setFav(true);
+
+        user.favoriteProductIds = res.data.favoriteProductIds;
+      }
+
+      localStorage.setItem("user", JSON.stringify(user));
 
       if (onFavoriteToggle) {
         onFavoriteToggle(product.id);
       }
-    } else {
-      localStorage.setItem(key, JSON.stringify([...saved, product]));
-      setFav(true);
+
+    } catch (err) {
+      console.error(err);
+      alert("Error updating favorites");
     }
   }
 

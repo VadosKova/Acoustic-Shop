@@ -21,16 +21,17 @@ export default function ProductDetails() {
   const isAdmin = user?.email === "admin@gmail.com";
 
   useEffect(() => {
-    API.get(`/api/products/${id}`).then(res => setProduct(res.data));
+    API.get(`/api/products/${id}`).then(res => {
+      setProduct(res.data);
+
+      if (user) {
+        const exists = user.favoriteProductIds?.includes(res.data.id);
+        setFav(!!exists);
+      }
+    });
   }, [id]);
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
-    const exists = saved.find(p => p.id === id);
-    setFav(!!exists);
-  }, [id]);
-
-  function toggleFavorite(e) {
+  async function toggleFavorite(e) {
     e.stopPropagation();
 
     if(!user){
@@ -43,15 +44,21 @@ export default function ProductDetails() {
       return;
     }
 
-    const saved = JSON.parse(localStorage.getItem("favorites")) || [];
-
-    if (fav) {
-        const updated = saved.filter(p => p.id !== product.id);
-        localStorage.setItem("favorites", JSON.stringify(updated));
+    try {
+      if (fav) {
+        await API.delete(`/api/auth/favorite/${user.id}/${product.id}`);
         setFav(false);
-    } else {
-        localStorage.setItem("favorites", JSON.stringify([...saved, product]));
+        user.favoriteProductIds = user.favoriteProductIds.filter(id => id !== product.id);
+      } else {
+        const res = await API.post(`/api/auth/favorite/${user.id}/${product.id}`);
         setFav(true);
+        user.favoriteProductIds = res.data.favoriteProductIds;
+      }
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+    } catch (err) {
+      console.error(err);
     }
   }
 

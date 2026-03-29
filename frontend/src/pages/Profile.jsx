@@ -27,14 +27,16 @@ export default function Profile() {
 
   const navigate = useNavigate();
 
-  const removeFromFavorites = (productId) => {
+  const removeFromFavorites = async (productId) => {
     if (!user) return;
 
-    setFavorites((prevFavorites) => {
-      const updated = prevFavorites.filter(p => p.id !== productId);
-      localStorage.setItem(`favorites_${user.email}`, JSON.stringify(updated));
-      return updated;
-    });
+    try {
+      await API.delete(`/api/auth/favorite/${user.id}/${productId}`);
+    } catch (err) {
+      console.error(err);
+    }
+
+    setFavorites(prev => prev.filter(p => p.id !== productId));
   };
 
   useEffect(() => {
@@ -144,8 +146,13 @@ export default function Profile() {
         password: password.trim()
       });
 
-      setUser(res.data);
-      localStorage.setItem("user", JSON.stringify(res.data));
+      const normalizedUser = {
+        ...res.data,
+        id: res.data.id || res.data._id
+      };
+
+      setUser(normalizedUser);
+      localStorage.setItem("user", JSON.stringify(normalizedUser));
 
       if (res.data.email === "admin@gmail.com") {
         navigate("/admin-panel");
@@ -248,16 +255,30 @@ export default function Profile() {
   useEffect(()=>{
     if (!user) return;
 
-    const fav = JSON.parse(localStorage.getItem(`favorites_${user.email}`)) || [];
-    setFavorites(fav);
+    async function loadFavorites() {
+      try {
+        const res = await API.get(`/api/auth/${user.id}`);
+        const favIds = res.data.favoriteProductIds || [];
+
+        const productsRes = await API.get("/api/products");
+
+        const favProducts = productsRes.data.filter(p =>
+          favIds.includes(p.id)
+        );
+
+        setFavorites(favProducts);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadFavorites();
 
     const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    const userOrders = allOrders.filter(o => o.user === user.email);
+    setOrders(userOrders);
 
-    if(user){
-      const userOrders = allOrders.filter(o => o.user === user.email);
-      setOrders(userOrders);
-    }
-  },[user]);
+  }, [user]);
 
   if (!user) {
     return (
@@ -453,69 +474,73 @@ export default function Profile() {
 
         <button className="logout" onClick={logout}>Log out</button>
       </div>
+      
+      {user?.email !== "admin@gmail.com" && (
+        <div className="profile-section">
+          <h3>Обране</h3>
 
-      <div className="profile-section">
-        <h3>Обране</h3>
-
-        {favorites.length === 0 ? (
-          <p>No choosen yet</p>
-        ) : (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: 20,
-            marginTop: 20,
-            marginLeft: 20
-          }}>
-            {favorites.map((p, i) => (
-              <ProductCard
-                key={p.id || i}
-                product={p}
-                hideFavorite={false}
-                isAdmin={user?.email === "admin@gmail.com"}
-                onFavoriteToggle={() => removeFromFavorites(p.id)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="profile-section">
-        <h3>Історія замовлень</h3>
-
-        {orders.length === 0 ? (
-          <p>No orders</p>
-        ) : (
-          orders.map((o,i)=>(
-            <div key={i} className="order-item" style={{ position: "relative" }}>
-              <div style={{
-                position: "absolute",
-                top: 10,
-                right: 10,
-                padding: "4px 8px",
-                borderRadius: 6,
-                fontSize: 12,
-                color: "#fff",
-                background:
-                  o.status === "Accepted"
-                    ? "green"
-                    : o.status === "Rejected"
-                    ? "red"
-                    : "#f5a623"
-              }}>
-                {o.status}
-              </div>
-              <p><b>Дата:</b> {new Date(o.date).toLocaleString()}</p>
-
-              {o.items.map((item,idx)=>(
-                <div key={idx}>
-                  {item.name} x {item.quantity}
-                </div>
+          {favorites.length === 0 ? (
+            <p>No choosen yet</p>
+          ) : (
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: 20,
+              marginTop: 20,
+              marginLeft: 20
+            }}>
+              {favorites.map((p, i) => (
+                <ProductCard
+                  key={p.id || i}
+                  product={p}
+                  hideFavorite={false}
+                  isAdmin={user?.email === "admin@gmail.com"}
+                  onFavoriteToggle={() => removeFromFavorites(p.id)}
+                />
               ))}
             </div>
-          ))
-        )}
-      </div>
+          )}
+        </div>
+      )}
+
+      {user?.email !== "admin@gmail.com" && (
+        <div className="profile-section">
+          <h3>Історія замовлень</h3>
+
+          {orders.length === 0 ? (
+            <p>No orders</p>
+          ) : (
+            orders.map((o,i)=>(
+              <div key={i} className="order-item" style={{ position: "relative" }}>
+                <div style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  padding: "4px 8px",
+                  borderRadius: 6,
+                  fontSize: 12,
+                  color: "#fff",
+                  background:
+                    o.status === "Accepted"
+                      ? "green"
+                      : o.status === "Rejected"
+                      ? "red"
+                      : "#f5a623"
+                }}>
+                  {o.status}
+                </div>
+                <p><b>Дата:</b> {new Date(o.date).toLocaleString()}</p>
+
+                {o.items.map((item,idx)=>(
+                  <div key={idx}>
+                    {item.name} x {item.quantity}
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
