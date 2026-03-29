@@ -20,7 +20,7 @@ export default function OrderDetails() {
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const u = JSON.parse(sessionStorage.getItem("user"));
+    const u = JSON.parse(localStorage.getItem("user"));
 
     setCart(savedCart);
     setUser(u);

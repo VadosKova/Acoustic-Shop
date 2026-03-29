@@ -6,7 +6,7 @@ import EditIcon from "../assets/icons/EditIcon";
 import DeleteIcon from "../assets/icons/DeleteIcon";
 
 export default function AdminPanel() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
   const [products,setProducts] = useState([]);
 
   const [name,setName] = useState("");

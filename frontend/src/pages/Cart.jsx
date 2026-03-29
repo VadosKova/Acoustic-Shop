@@ -18,7 +18,7 @@ export default function Cart() {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(savedCart);
 
-    const u = JSON.parse(sessionStorage.getItem("user"));
+    const u = JSON.parse(localStorage.getItem("user"));
     setUser(u);
   },[]);
 
