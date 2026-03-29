@@ -27,6 +27,19 @@ export default function Profile() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const savedWallet = localStorage.getItem("wallet");
+    const savedBalance = localStorage.getItem("walletBalance");
+
+    if (savedWallet) {
+      setAccount(savedWallet);
+    }
+
+    if (savedBalance) {
+      setWalletBalance(savedBalance);
+    }
+  }, []);
+
   const removeFromFavorites = async (productId) => {
     if (!user) return;
 
@@ -72,7 +85,10 @@ export default function Profile() {
     }
     const provider = new ethers.BrowserProvider(window.ethereum);
     const accounts = await provider.send("eth_requestAccounts", []);
+
     setAccount(accounts[0]);
+
+    localStorage.setItem("wallet", accounts[0]);
   }
 
   async function loadWalletBalance() {
@@ -174,6 +190,8 @@ export default function Profile() {
   function disconnectWallet() {
     setAccount("");
     setWalletBalance("0");
+
+    localStorage.removeItem("wallet");
   }
 
   function handleAvatarUpload(e) {

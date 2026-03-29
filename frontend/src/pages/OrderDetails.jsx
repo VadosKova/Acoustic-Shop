@@ -135,6 +135,13 @@ export default function OrderDetails() {
       return;
     }
 
+    const savedWallet = localStorage.getItem("wallet");
+
+    if (!savedWallet) {
+      alert("Connect wallet in Profile first");
+      return;
+    }
+
     try {
       setStatus("Waiting for payment...");
 
@@ -147,6 +154,9 @@ export default function OrderDetails() {
       });
 
       await tx.wait();
+
+      const newBalance = await provider.getBalance(savedWallet);
+      localStorage.setItem("walletBalance", ethers.formatEther(newBalance));
 
       setStatus("Payment successful");
 

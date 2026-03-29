@@ -11,6 +11,15 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
   const [fav, setFav] = useState(false);
   const [hovered, setHovered] = useState(false);
 
+  const name = product.Name || product.name;
+  const image = product.ImageUrl || product.imageUrl;
+  const price = product.PriceEth || product.priceEth;
+  const rating = product.Rating || product.rating;
+  const quantity = product.Specs?.Quantity;
+  const inStock = product.InStock;
+
+  const isOutOfStock = product.InStock === false || quantity === 0;
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -40,6 +49,8 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       alert("Admin cannot use favorites");
       return;
     }
+
+    if (isOutOfStock) return;
 
     const productId = product.id || product._id;
 
@@ -93,6 +104,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
   }
 
   function goToDetails() {
+    if (isOutOfStock) return;
     navigate(`/product/${product.id || product._id}`);
   }
 
@@ -105,7 +117,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       display: "flex",
       flexDirection: "column",
       overflow: "hidden",
-      backgroundColor: "#fff",
+      backgroundColor: isOutOfStock ? "#f3f3f3" : "#fff",
       boxShadow: hovered
         ? "0 8px 20px rgba(0,0,0,0.15)"
         : "0 2px 6px rgba(0,0,0,0.1)",
@@ -115,7 +127,9 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
       position: "relative",
       transform: hovered ? "translateY(-6px)" : "translateY(0)",
       transition: "all 0.25s ease",
-      cursor: "pointer"
+      cursor: isOutOfStock ? "not-allowed" : "pointer",
+      opacity: isOutOfStock ? 0.6 : 1,
+      filter: isOutOfStock ? "grayscale(100%)" : "none"
     }}>
       <div style={{
         width: "100%",
@@ -129,8 +143,8 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
         flexShrink: 0
       }}>
         <img
-          src={product.imageUrl}
-          alt={product.name}
+          src={image}
+          alt={name}
           style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", transform: hovered ? "scale(1.05)" : "scale(1)", transition: "transform 0.3s ease" }}
         />
       </div>
@@ -151,12 +165,12 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
           overflow: "hidden",
           textOverflow: "ellipsis",
         }}>
-          {product.name}
+          {name}
         </h4>
         
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
           <span style={{ color: "#f5a623", fontSize: 20 }}>
-            {renderStars(product.rating)}
+            {renderStars(rating)}
           </span>
           <br/>
           <ReviewIcon />
@@ -166,8 +180,14 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
         </div>
 
         <p style={{ margin: "0 0 12px 0", fontWeight: "bold", fontSize: 25 }}>
-          {product.priceEth} ETH
+          {price} ETH
         </p>
+
+        {isOutOfStock && (
+          <p style={{ color: "red", fontWeight: "bold" }}>
+            Out of stock
+          </p>
+        )}
       </div>
       <div style={{
         position: "absolute",
@@ -183,7 +203,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
         {!isAdmin && (
           <>
             {!hideFavorite && (
-              <div style={{ cursor: "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
+              <div style={{ cursor: isOutOfStock ? "not-allowed" : "pointer", transform: hovered ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }}>
                 <HeartIcon
                   filled={fav}
                   onClick={toggleFavorite}
@@ -191,7 +211,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
               </div>
             )}
 
-            <div onClick={addToCart} style={{ cursor: "pointer" }}>
+            <div onClick={addToCart} style={{ cursor: isOutOfStock ? "not-allowed" : "pointer" }}>
               <CartIcon />
             </div>
           </>
