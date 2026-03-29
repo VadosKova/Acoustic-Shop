@@ -40,9 +40,20 @@ export default function OrderDetails() {
     "Payment failed": "#ff4d4d"
   };
 
-  const filteredWarehouses = warehouses.filter(w =>
-    w.Description.toLowerCase().includes(warehouse.toLowerCase())
-  );
+  const normalize = (text) =>
+    text
+      .toLowerCase()
+      .replace(/\s/g, "")
+      .replace("№", "")
+      .replace("no.", "")
+      .replace("n", "");
+
+  const filteredWarehouses = warehouses.filter(w => {
+    const text = normalize(w.Description);
+    const query = normalize(warehouse);
+
+    return text.includes(query);
+  });
 
   async function handleCitySearch(e) {
     const query = e.target.value;
@@ -76,6 +87,8 @@ export default function OrderDetails() {
   }
 
   async function selectCity(cityObj) {
+    const correctCityRef = cityObj.DeliveryCity;
+
     setCity(cityObj.Present);
     setCityRef(cityObj.Ref);
     setCities([]);
@@ -90,7 +103,7 @@ export default function OrderDetails() {
           modelName: "Address",
           calledMethod: "getWarehouses",
           methodProperties: {
-            CityRef: cityObj.Ref
+            CityRef: correctCityRef
           }
         })
       });
@@ -201,7 +214,7 @@ export default function OrderDetails() {
             )}
 
             <input
-              placeholder="Warehouse"
+              placeholder="Warehouse (e.g. 4)"
               value={warehouse}
               onFocus={() => {
                 if (!cityRef) {
