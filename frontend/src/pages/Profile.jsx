@@ -274,10 +274,16 @@ export default function Profile() {
 
     loadFavorites();
 
-    const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    const userOrders = allOrders.filter(o => o.user === user.email);
-    setOrders(userOrders);
+    async function loadOrders() {
+      try {
+        const res = await API.get(`/api/orders/user/${user.email}`);
+        setOrders(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
+    loadOrders();
   }, [user]);
 
   if (!user) {
