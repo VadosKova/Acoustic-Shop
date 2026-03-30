@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication2.Models;
 using WebApplication2.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication2.Controllers
 {
@@ -9,6 +10,7 @@ namespace WebApplication2.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserMongoService _userService;
+        private readonly PasswordHasher<User> _passwordHasher = new();
 
         public AuthController(UserMongoService userService)
         {
@@ -23,6 +25,8 @@ namespace WebApplication2.Controllers
             if (existing != null)
                 return BadRequest("User already exists");
 
+            user.Password = _passwordHasher.HashPassword(user, user.Password);
+
             await _userService.CreateAsync(user);
 
             return Ok(user);
@@ -33,8 +37,27 @@ namespace WebApplication2.Controllers
         {
             var user = await _userService.GetByEmailAsync(login.Email);
 
-            if (user == null || user.Password != login.Password)
+            if (user == null)
                 return Unauthorized();
+
+            var result = _passwordHasher.VerifyHashedPassword(
+                user,
+                user.Password,
+                login.Password
+            );
+
+            if (result == PasswordVerificationResult.Failed)
+                return Unauthorized();
+
+            return Ok(user);
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUser(string userId)
+        {
+            var user = await _userService.GetByIdAsync(userId);
+
+            if (user == null) return NotFound();
 
             return Ok(user);
         }

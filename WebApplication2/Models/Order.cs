@@ -9,6 +9,7 @@ namespace WebApplication2.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = "";
         public string UserId { get; set; } = "";
+        public string Name { get; set; } = "";
         public string City { get; set; } = "";
         public string Warehouse { get; set; } = "";
         public List<OrderItem> Items { get; set; } = new();

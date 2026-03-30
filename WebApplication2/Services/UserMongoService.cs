@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using WebApplication2.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication2.Services
 {
@@ -31,12 +32,17 @@ namespace WebApplication2.Services
 
             if (existing == null)
             {
-                await CreateAsync(new User
+                var hasher = new PasswordHasher<User>();
+
+                var admin = new User
                 {
                     Email = "admin@gmail.com",
-                    Password = "1234",
                     Name = "Admin"
-                });
+                };
+
+                admin.Password = hasher.HashPassword(admin, "1234");
+
+                await CreateAsync(admin);
             }
         }
 
