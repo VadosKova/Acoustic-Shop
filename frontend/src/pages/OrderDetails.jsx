@@ -150,7 +150,7 @@ export default function OrderDetails() {
 
       const tx = await signer.sendTransaction({
         to: import.meta.env.VITE_CONTRACT_ADDRESS,
-        value: ethers.parseEther(finalTotal.toString())
+        value: ethers.parseEther(finalTotal.toString(8))
       });
 
       await tx.wait();
@@ -162,12 +162,13 @@ export default function OrderDetails() {
 
       const order = {
         userId: user.email,
+        date: new Date().toISOString(),
         items: cart.map(item => ({
           productId: item.id || item._id,
           name: item.name,
           priceEth: item.priceEth,
           quantity: item.quantity,
-          imageUrl: item.imageUrl
+          imageUrl: item.imageUrl || item.ImageUrl
         })),
         totalPriceEth: finalTotal,
         status: "Processing",

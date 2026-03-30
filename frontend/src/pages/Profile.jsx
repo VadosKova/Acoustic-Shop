@@ -456,45 +456,49 @@ export default function Profile() {
             </button>
           </>
         )}
+        
+        {user?.email !== "admin@gmail.com" && (
+          <>
+            {!account ? (
+              <button className="wallet-btn" onClick={connectWallet}>
+                Connect Wallet
+              </button>
+            ) : (
+              <button className="wallet-btn disconnect" onClick={disconnectWallet}>
+                Disconnect Wallet
+              </button>
+            )}
 
-        {!account ? (
-          <button className="wallet-btn" onClick={connectWallet}>
-            Connect Wallet
-          </button>
-        ) : (
-          <button className="wallet-btn disconnect" onClick={disconnectWallet}>
-            Disconnect Wallet
-          </button>
-        )}
-
-        {account && (
-          <div className="wallet-box" style={{
-            marginTop: 10,
-            display: "flex",
-            flexDirection: "column",
-            gap: 6
-          }}>
-            <div><b>Wallet:</b></div>
-            <div style={{
-              fontSize: 12,
-              background: "#fff",
-              padding: "6px 8px",
-              borderRadius: 6,
-              border: "1px solid #eee"
-            }}>
-              {account}
-            </div>
-
-            <div style={{ marginTop: 6 }}>
-              <b>Balance:</b>{" "}
-              <span style={{
-                color: "#42b883",
-                fontWeight: "600"
+            {account && (
+              <div className="wallet-box" style={{
+                marginTop: 10,
+                display: "flex",
+                flexDirection: "column",
+                gap: 6
               }}>
-                {parseFloat(walletBalance).toFixed(4)} ETH
-              </span>
-            </div>
-          </div>
+                <div><b>Wallet:</b></div>
+                <div style={{
+                  fontSize: 12,
+                  background: "#fff",
+                  padding: "6px 8px",
+                  borderRadius: 6,
+                  border: "1px solid #eee"
+                }}>
+                  {account}
+                </div>
+
+                <div style={{ marginTop: 6 }}>
+                  <b>Balance:</b>{" "}
+                  <span style={{
+                    color: "#42b883",
+                    fontWeight: "600"
+                  }}>
+                    {parseFloat(walletBalance).toFixed(4)} ETH
+                  </span>
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         <button className="logout" onClick={logout}>Log out</button>
