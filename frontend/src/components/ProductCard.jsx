@@ -18,7 +18,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
   const quantity = product.Specs?.Quantity;
   const inStock = product.InStock;
 
-  const isOutOfStock = product.InStock === false || quantity === 0;
+  const isOutOfStock = (product.inStock === false || product.InStock === false) || (product.specs?.quantity === 0 || product.Specs?.Quantity === 0);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -81,6 +81,11 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
 
   function addToCart(e) {
     e.stopPropagation();
+
+    if (isOutOfStock) {
+      alert("This product is out of stock");
+      return;
+    }
 
     const user = JSON.parse(localStorage.getItem("user"));
     const isAdmin = user?.email === "admin@gmail.com";
@@ -212,7 +217,7 @@ export default function ProductCard({ product, onBuy, hideFavorite = false, isAd
             )}
 
             <div onClick={addToCart} style={{ cursor: isOutOfStock ? "not-allowed" : "pointer" }}>
-              <CartIcon />
+              <CartIcon disabled={isOutOfStock} />
             </div>
           </>
         )}

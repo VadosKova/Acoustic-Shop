@@ -17,6 +17,8 @@ export default function ProductDetails() {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviews, setReviews] = useState([]);
 
+  const isOutOfStock = (product.inStock === false || product.InStock === false) || (product.specs?.quantity === 0 || product.Specs?.Quantity === 0);
+
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user?.email === "admin@gmail.com";
 
@@ -63,6 +65,11 @@ export default function ProductDetails() {
   }
 
   function addToCart() {
+    if (isOutOfStock) {
+      alert("Out of stock");
+      return;
+    }
+
     if(!user){
       alert("You need to Sign In");
       return;
@@ -166,19 +173,20 @@ export default function ProductDetails() {
 
                 <button
                   onClick={addToCart}
+                  disabled={isOutOfStock}
                   style={{
                     display: "flex",
                     alignItems: "center",
                     gap: 8,
                     padding: "10px 16px",
-                    background: "#42b883",
+                    background: isOutOfStock ? "#ccc" : "#42b883",
                     color: "#fff",
                     border: "none",
                     borderRadius: 8,
-                    cursor: "pointer"
+                    cursor: isOutOfStock ? "not-allowed" : "pointer"
                   }}
                 >
-                  <CartIcon color="#fff" /> Buy
+                  <CartIcon color="#fff" /> {isOutOfStock ? "Out of Stock" : "Buy"}
                 </button>
 
                 <div style={{ cursor: "pointer" }}>
