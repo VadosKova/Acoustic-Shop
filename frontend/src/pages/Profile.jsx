@@ -561,7 +561,7 @@ export default function Profile() {
                     {o.status}
                   </div>
                   <p style={{ marginBottom: 15, fontSize: 14, color: "#666" }}>
-                    <b>Дата:</b> {o.date ? new Date(o.date).toLocaleString() : "Не вказана"}
+                    <b>Дата:</b> {new Date(o.createdAt).toLocaleDateString() || "Не вказана"}
                   </p>
                   
                   <div className="order-products" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
