@@ -17,8 +17,6 @@ export default function ProductDetails() {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviews, setReviews] = useState([]);
 
-  const isOutOfStock = (product.inStock === false || product.InStock === false) || (product.specs?.quantity === 0 || product.Specs?.Quantity === 0);
-
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user?.email === "admin@gmail.com";
 
@@ -127,6 +125,8 @@ export default function ProductDetails() {
   }
 
   if (!product) return <p>Loading...</p>;
+
+  const isOutOfStock = (product.inStock === false || product.InStock === false) || (product.specs?.quantity === 0 || product.Specs?.Quantity === 0);
 
   return (
     <div style={{ padding: 30 }}>

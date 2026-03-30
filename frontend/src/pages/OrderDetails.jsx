@@ -162,6 +162,7 @@ export default function OrderDetails() {
 
       const order = {
         userId: user.email,
+        name: user.name,
         createdAt: new Date().toISOString(),
         items: cart.map(item => ({
           productId: item.id || item._id,

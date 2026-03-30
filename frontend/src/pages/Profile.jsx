@@ -367,9 +367,9 @@ export default function Profile() {
                 Register
               </button>
 
-              <p style={{textAlign: "center"}}>
+              <p style={{textAlign: "center", color: "#cecece"}}>
                 Already have an account?
-                <br/><span className="link" onClick={()=>setMode("login")}>
+                <br/><span className="link" style={{textAlign: "center", color: "#555"}} onClick={()=>setMode("login")}>
                   Login
                 </span>
               </p>
@@ -378,9 +378,9 @@ export default function Profile() {
             <>
               <button className="primary-btn" onClick={login}>Login</button>
 
-              <p style={{textAlign: "center", color: "#555"}}>
+              <p style={{textAlign: "center", color: "#cecece"}}>
                 No account?
-                <br/><span className="link" onClick={()=>setMode("register")}>
+                <br/><span className="link" style={{textAlign: "center", color: "#555"}} onClick={()=>setMode("register")}>
                   Register
                 </span>
               </p>
@@ -562,6 +562,10 @@ export default function Profile() {
                   </div>
                   <p style={{ marginBottom: 15, fontSize: 14, color: "#666" }}>
                     <b>Дата:</b> {new Date(o.createdAt).toLocaleDateString() || "Не вказана"}
+                  </p>
+
+                  <p style={{ marginBottom: 15, fontSize: 16 }}>
+                    <b>Загальна сума:</b> <span style={{ color: "#42b883", fontWeight: "bold" }}>{o.totalPriceEth ? o.totalPriceEth.toFixed(4) : "0.0000"} ETH</span>
                   </p>
                   
                   <div className="order-products" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
